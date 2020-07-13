@@ -1,0 +1,13 @@
+﻿
+<form ng-controller="uCondition.GlobalConditions.Editor as Ctrl" ng-submit="">
+    <div class="edit-row-name">
+        <label>Name: </label><input type="text" ng-model="editValue.Name" required />
+    </div>
+    <div>
+        <umb-editor model="editModel"></umb-editor>
+    </div>
+    <div class="alignRight" style="padding-top:10px;">
+        <button class="btn btn-success" ng-click="Ctrl.Accept()">Save Changes</button>
+        <button class="btn btn-danger" ng-click="cancel()">Cancel</button>
+    </div>
+</form>

@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<dashBoard>
+
+  <section alias="uCondition">
+    <areas>
+      <area>content</area>
+    </areas>
+    <tab caption="Global Conditions">
+      <control>
+        /app_plugins/ucondition/controlpanels/globalconditions/globalconditions.html
+      </control>
+    </tab>
+  </section>
+
+</dashBoard>

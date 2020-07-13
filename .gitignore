@@ -1,0 +1,8 @@
+node_modules/
+dist/
+packages/
+obj
+bin
+App_Data
+.vs
+*.user
