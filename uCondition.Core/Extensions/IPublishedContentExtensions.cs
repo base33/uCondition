@@ -1,26 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Web;
-using System.Web.Mvc;
-using System.Web.Routing;
-using uCondition.Core.Controllers;
-using uCondition.Core.Models;
+﻿using System.Linq;
 using uCondition.Core.Models.Converter;
 using uCondition.ExpressionEngine;
-using uCondition.Models;
-using Umbraco.Core.Models;
+using Umbraco.Core.Models.PublishedContent;
 using Umbraco.Web;
 
 namespace uCondition.Core.Extensions
 {
-    public static class IPublishedContentExtensions
+    public static class IPublishedElementExtensions
     {
-        public static bool IsExpressionTrue(this IPublishedContent content, string propertyName)
+        public static bool IsExpressionTrue(this IPublishedElement content, string propertyName)
         {
-            string json = content.GetPropertyValue<string>(propertyName);
+            string json = content.Value<string>(propertyName);
 
             var modelConverter = new uConditionModelConverter();
             var model = modelConverter.Convert(json);

@@ -1,10 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25123.0
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.645
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "uCondition.Umbraco", "uCondition.Umbraco\uCondition.Umbraco.csproj", "{A73DE7A9-1C5D-49D5-AAED-B1E6390F6FAE}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "uCondition.Interfaces", "uCondition.Interfaces\uCondition.Interfaces.csproj", "{4FDCE4EB-58C0-48F2-9F70-CB66BA6A4AA5}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "uCondition.Core", "uCondition.Core\uCondition.Core.csproj", "{2114AE18-B132-4427-A94A-F3062017D41B}"
@@ -19,16 +17,14 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "uCondition.Core.Models", "u
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "uCondition.Core.Interfaces", "uCondition.Core.Interfaces\uCondition.Core.Interfaces.csproj", "{0D92F0A5-0AEC-4BCE-868D-D0ABCE21AE1A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "uCondition.Umbraco", "uCondition.Umbraco\uCondition.Umbraco.csproj", "{59971A4B-B70B-419E-8FBD-5746EE44B3F3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{A73DE7A9-1C5D-49D5-AAED-B1E6390F6FAE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A73DE7A9-1C5D-49D5-AAED-B1E6390F6FAE}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A73DE7A9-1C5D-49D5-AAED-B1E6390F6FAE}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A73DE7A9-1C5D-49D5-AAED-B1E6390F6FAE}.Release|Any CPU.Build.0 = Release|Any CPU
 		{4FDCE4EB-58C0-48F2-9F70-CB66BA6A4AA5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{4FDCE4EB-58C0-48F2-9F70-CB66BA6A4AA5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4FDCE4EB-58C0-48F2-9F70-CB66BA6A4AA5}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -57,8 +53,15 @@ Global
 		{0D92F0A5-0AEC-4BCE-868D-D0ABCE21AE1A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0D92F0A5-0AEC-4BCE-868D-D0ABCE21AE1A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0D92F0A5-0AEC-4BCE-868D-D0ABCE21AE1A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{59971A4B-B70B-419E-8FBD-5746EE44B3F3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{59971A4B-B70B-419E-8FBD-5746EE44B3F3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{59971A4B-B70B-419E-8FBD-5746EE44B3F3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{59971A4B-B70B-419E-8FBD-5746EE44B3F3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {F05E12BA-ADBB-4321-9BBD-FB654742E1C2}
 	EndGlobalSection
 EndGlobal

@@ -13,6 +13,7 @@ namespace uCondition.ExpressionEngine
 {
     public class ExpressionCompiler
     {
+
         public IExpression Compile(PredicateGroup predicateGroup, IPredicateManager predicateManager)
         {
             var root = new BinaryExpression();

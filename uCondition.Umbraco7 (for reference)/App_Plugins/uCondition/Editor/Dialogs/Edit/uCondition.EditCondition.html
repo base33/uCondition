@@ -1,0 +1,35 @@
+﻿
+<div ng-controller="uCondition.Editors.GenericEditor as Ctrl" class="uCondition_EditCondition form-horizontal umb-property">
+
+    <div class="control-group umb-control-group">
+        <ng-form>
+            <div class="umb-el-wrap">
+                <label class="control-label">Negate condition?</label>
+                <div class="controls">
+                    <div class="umb-property-editor umb-boolean">
+                        <input type="checkbox" ng-model="model.dialogData.Invert" />
+                    </div>
+                </div>
+            </div>
+        </ng-form>
+    </div>
+
+    <div class="control-group umb-control-group" ng-repeat="field in Ctrl.Fields | orderBy:'+SortOrder'">
+        <ng-form>
+            <div class="umb-el-wrap">
+                <label class="control-label">{{field.Name}}</label>
+                <div class="controls">
+                    <umb-editor model="field.PropertyEditorModel"></umb-editor>
+                </div>
+            </div>
+        </ng-form>
+    </div>
+</div>
+
+<style type="text/css">
+    .uCondition_EditCondition > .control-group > ng-form > .umb-el-wrap > .control-label {
+        display: inline-block;
+        float: left;
+        width: 160px !important;
+    }
+</style>
