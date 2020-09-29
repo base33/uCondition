@@ -267,8 +267,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\Startup.cs" />
-    <Compile Include="Compositions\RegisterUConditionApiRoutesComponent.cs" />
-    <Compile Include="Controllers\GenericController.cs" />
+    <Compile Include="Components\UConditionComponent.cs" />
+    <Compile Include="Composers\UConditionComposer.cs" />
     <Compile Include="Controllers\uConditionApiController.cs" />
     <Compile Include="Data\Migrations\CreateRegisteredConditionsTable.cs" />
     <Compile Include="Data\Models\GlobalCondition.cs" />

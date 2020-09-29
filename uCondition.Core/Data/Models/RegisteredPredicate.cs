@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Umbraco.Core.Persistence;
+﻿using NPoco;
 using Umbraco.Core.Persistence.DatabaseAnnotations;
 
 namespace uCondition.Core.Data.Models
 {
-    [PrimaryKey("Id", autoIncrement = true)]
+    [PrimaryKey("Id", AutoIncrement = true)]
     [TableName("RegisteredPredicates")]
     public class RegisteredPredicate
     {

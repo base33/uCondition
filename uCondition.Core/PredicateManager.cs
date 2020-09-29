@@ -1,15 +1,9 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Web;
 using System.Web.Compilation;
-using uCondition.Core.Data;
 using uCondition.Core.Data.Models;
 using uCondition.Core.Interfaces;
-using uCondition.Interfaces;
 using uCondition.Models;
 
 namespace uCondition.Core
