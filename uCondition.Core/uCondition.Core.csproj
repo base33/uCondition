@@ -268,7 +268,7 @@
   <ItemGroup>
     <Compile Include="Components\UConditionComponent.cs" />
     <Compile Include="Composers\UConditionComposer.cs" />
-    <Compile Include="Controllers\uConditionApiController.cs" />
+    <Compile Include="Controllers\UConditionApiController.cs" />
     <Compile Include="Data\Migrations\CreateRegisteredConditionsTable.cs" />
     <Compile Include="Data\Models\GlobalCondition.cs" />
     <Compile Include="Data\GlobalConditionsRepository.cs" />
