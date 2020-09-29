@@ -266,7 +266,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="App_Start\Startup.cs" />
     <Compile Include="Components\UConditionComponent.cs" />
     <Compile Include="Composers\UConditionComposer.cs" />
     <Compile Include="Controllers\uConditionApiController.cs" />
