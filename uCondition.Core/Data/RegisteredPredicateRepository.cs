@@ -10,7 +10,16 @@ using Umbraco.Core.Scoping;
 
 namespace uCondition.Core.Data
 {
-    public class RegisteredPredicateRepository
+    public interface IRegisteredPredicateRepository
+    {
+        void Delete(int id);
+        IEnumerable<RegisteredPredicate> GetAll();
+        RegisteredPredicate GetSingle(int id);
+        int Insert(RegisteredPredicate registeredCondition);
+        void Update(RegisteredPredicate registeredCondition);
+    }
+
+    public class RegisteredPredicateRepository : IRegisteredPredicateRepository
     {
         protected readonly IScopeAccessor scopeAccessor;
         protected readonly IProfilingLogger logger;

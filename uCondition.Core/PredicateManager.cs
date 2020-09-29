@@ -10,6 +10,13 @@ namespace uCondition.Core
 {
     public class PredicateManager : IPredicateManager
     {
+        private readonly IGlobalConditionsRepository _globalConditionsRepository;
+
+        public PredicateManager(IGlobalConditionsRepository globalConditionsRepository)
+        {
+            _globalConditionsRepository = globalConditionsRepository;
+        }
+
         protected static List<Predicate> PredicateConfigs = new List<Predicate>();
 
         public List<Predicate> GetPredicates(bool withGlobalPredicates = true)
@@ -19,8 +26,9 @@ namespace uCondition.Core
 
             if(withGlobalPredicates)
             {
-                var repo = new GlobalConditionsRepository();
-                predicates.AddRange(repo.GetAll().Select(c => new Models.GlobalPredicate(Models.Mappers.DataToModel(c))));
+                predicates.AddRange(_globalConditionsRepository
+                    .GetAll()
+                    .Select(c => new Models.GlobalPredicate(Models.Mappers.DataToModel(c))));
             }
 
             return predicates;
@@ -32,8 +40,7 @@ namespace uCondition.Core
 
             if(predicate == null)
             {
-                var repo = new GlobalConditionsRepository();
-                var globalCondition = repo.GetSingle(alias);
+                var globalCondition = _globalConditionsRepository.GetSingle(alias);
                 if(globalCondition != null)
                 {
                     return new Models.GlobalPredicate(Models.Mappers.DataToModel(globalCondition));

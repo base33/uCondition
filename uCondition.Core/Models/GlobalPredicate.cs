@@ -1,8 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Web.Mvc;
+using uCondition.Core.Interfaces;
 using uCondition.Interfaces;
 using uCondition.Models;
 
@@ -24,8 +23,9 @@ namespace uCondition.Core.Models
 
         public override bool Validate(IFieldValues fieldValues)
         {
+            var predicateManager = DependencyResolver.Current.GetService<IPredicateManager>();
             var expressionCompiler = new ExpressionEngine.ExpressionCompiler();
-            var compiledExpression = expressionCompiler.Compile(Model.Condition.PredicateGroups.First(), new PredicateManager());
+            var compiledExpression = expressionCompiler.Compile(Model.Condition.PredicateGroups.First(), predicateManager);
             var expressionAnalyser = new ExpressionEngine.ExpressionAnalyser();
             return expressionAnalyser.Analyse(compiledExpression);
         }

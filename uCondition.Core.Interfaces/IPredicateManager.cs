@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using uCondition.Models;
 
 namespace uCondition.Core.Interfaces
 {
     public interface IPredicateManager
     {
-        List<Predicate> GetPredicates(bool withPredicates);
+        List<Predicate> GetPredicates(bool withPredicates = true);
         Predicate GetPredicate(string alias);
     }
 }

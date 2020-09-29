@@ -9,7 +9,17 @@ using Umbraco.Core.Scoping;
 
 namespace uCondition.Core.Data.Models
 {
-    public class GlobalConditionsRepository
+    public interface IGlobalConditionsRepository
+    {
+        void Delete(int id);
+        IEnumerable<GlobalCondition> GetAll();
+        GlobalCondition GetSingle(int id);
+        GlobalCondition GetSingle(string guid);
+        int Insert(GlobalCondition globalCondition);
+        void Update(GlobalCondition globalCondition);
+    }
+
+    public class GlobalConditionsRepository : IGlobalConditionsRepository
     {
         protected readonly IScopeAccessor scopeAccessor;
         protected readonly IProfilingLogger logger;

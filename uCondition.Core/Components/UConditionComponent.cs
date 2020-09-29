@@ -5,7 +5,6 @@ using Umbraco.Core.Migrations;
 using Umbraco.Core.Migrations.Upgrade;
 using Umbraco.Core.Scoping;
 using Umbraco.Core.Services;
-using System;
 
 namespace uCondition.Core.Components
 {

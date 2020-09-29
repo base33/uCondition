@@ -1,24 +1,31 @@
 ﻿using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Globalization;
 using System.Linq;
-using System.Net;
-using System.Text;
-using System.Threading.Tasks;
 using System.Web.Http;
 using uCondition.Core.Data.Models;
+using uCondition.Core.Interfaces;
 using uCondition.Core.Models;
-using uCondition.Interfaces;
-using uCondition.Predicates.Members;
 using Umbraco.Core.PropertyEditors;
+using Umbraco.Core.Services;
 using Umbraco.Web.WebApi;
 
 namespace uCondition.Core.Controllers
 {
-    public class uConditionApiController : UmbracoAuthorizedApiController
+    public class UConditionApiController : UmbracoAuthorizedApiController
     {
+        private readonly IDataTypeService _dataTypeService;
+        private readonly PropertyEditorCollection _propertyEditors;
+        private readonly IGlobalConditionsRepository _globalConditionsRepository;
+        private readonly IPredicateManager _predicateManager;
+
+        public UConditionApiController(IDataTypeService dataTypeService, IGlobalConditionsRepository globalConditionsRepository, PropertyEditorCollection propertyEditors, IPredicateManager predicateManager)
+        {
+            _dataTypeService = dataTypeService;
+            _globalConditionsRepository = globalConditionsRepository;
+            _propertyEditors = propertyEditors;
+            _predicateManager = predicateManager;
+        }
+
         #region Editor
         /// <summary>
         /// /umbraco/backoffice/Api/uConditionApi/GetPredicates
@@ -27,10 +34,9 @@ namespace uCondition.Core.Controllers
         [HttpGet]
         public IEnumerable<uCondition.Models.Predicate> GetPredicates()
         {
-            var predicateManager = new PredicateManager();
-            return predicateManager.GetPredicates();
+            return _predicateManager.GetPredicates();
         }
-        
+
 
         /// <summary>
         /// /umbraco/backoffice/Api/uConditionApi/GetPropertyEditorByName
@@ -39,49 +45,58 @@ namespace uCondition.Core.Controllers
         [HttpGet]
         public object GetPropertyEditorByName(string datatypeName)
         {
-            var datatype = Umbraco.DataTypeService.GetDataTypeDefinitionByName(datatypeName);
+            var datatype = _dataTypeService.GetDataType(datatypeName);
 
             if (datatype == null)
             {
                 return null;
             }
 
-            var propertyType = PropertyEditorResolver.Current.GetByAlias(datatype.PropertyEditorAlias);
-            var prevaluesDb = UmbracoContext.Application.Services.DataTypeService.GetPreValuesCollectionByDataTypeId(datatype.Id);
+            if(!_propertyEditors.TryGet(datatype.EditorAlias, out var propertyType))
+            {
+                return null;
+            }
+            ////var prevaluesDb = _dataTypeService.GetPreValuesCollectionByDataTypeId(datatype.Id);
 
+            var preValuesFromDb = (ValueListConfiguration)datatype.Configuration;
             var preValues = new Dictionary<string, object>();
-            if(prevaluesDb.IsDictionaryBased)
+
+            foreach(var item in preValuesFromDb.Items)
             {
-                if (prevaluesDb.PreValuesAsDictionary.Count > 0 && stringIsNumber(prevaluesDb.PreValuesAsDictionary.First().Key))
-                {
-                    preValues.Add("items", prevaluesDb.PreValuesAsDictionary.Select(c => new { id = c.Value.Id, value = c.Value.Value }));//.Value));
-                }
-                else
-                {
-                    preValues = prevaluesDb.PreValuesAsDictionary.ToDictionary(k => k.Key, v => v.Value.Value != null && v.Value.Value.StartsWith("{") ? JsonConvert.DeserializeObject(v.Value.Value) : (object)v.Value.Value);
-                }
+                preValues.Add(item.Id.ToString(), item.Value);
             }
-            else
-            {
-                prevaluesDb.PreValuesAsArray.ToList().ForEach(p => preValues.Add(propertyType.PreValueEditor.Fields[p.SortOrder].Key, p.Value));
-            }
+            //if (prevaluesDb.IsDictionaryBased)
+            //{
+            //    if (prevaluesDb.PreValuesAsDictionary.Count > 0 && stringIsNumber(prevaluesDb.PreValuesAsDictionary.First().Key))
+            //    {
+            //        preValues.Add("items", prevaluesDb.PreValuesAsDictionary.Select(c => new { id = c.Value.Id, value = c.Value.Value }));//.Value));
+            //    }
+            //    else
+            //    {
+            //        preValues = prevaluesDb.PreValuesAsDictionary.ToDictionary(k => k.Key, v => v.Value.Value != null && v.Value.Value.StartsWith("{") ? JsonConvert.DeserializeObject(v.Value.Value) : (object)v.Value.Value);
+            //    }
+            //}
+            //else
+            //{
+            //    prevaluesDb.PreValuesAsArray.ToList().ForEach(p => preValues.Add(propertyType.PreValueEditor.Fields[p.SortOrder].Key, p.Value));
+            //}
 
 
             ////TODO: needed?
-            foreach (var p in propertyType.PreValueEditor.Fields.Where(c => c.View == "hidden"))
-            {
-                preValues.Add(p.Key, "1");
-            }
+            //foreach (var p in propertyType.PreValueEditor.Fields.Where(c => c.View == "hidden"))
+            //{
+            //    preValues.Add(p.Key, "1");
+            //}
 
-            if (propertyType.DefaultPreValues != null)
-            {
-                foreach (var defaultPreValue in propertyType.DefaultPreValues.Where(c => !preValues.ContainsKey(c.Key)))
-                {
-                    preValues.Add(defaultPreValue.Key, defaultPreValue.Value);
-                }
-            }
+            //if (propertyType.DefaultPreValues != null)
+            //{
+            //    foreach (var defaultPreValue in propertyType.DefaultPreValues.Where(c => !preValues.ContainsKey(c.Key)))
+            //    {
+            //        preValues.Add(defaultPreValue.Key, defaultPreValue.Value);
+            //    }
+            //}
 
-            return new { view = propertyType.ValueEditor.View, prevalues = preValues };
+            return new { view = propertyType.GetValueEditor().View, prevalues = preValues };
         }
 
         /// <summary>
@@ -89,11 +104,11 @@ namespace uCondition.Core.Controllers
         /// </summary>
         /// <param name="Ids"></param>
         /// <returns></returns>
-        [HttpGet]
-        public object GetPrevalues(int[] Ids)
-        {
-            return Ids.Select(s => umbraco.library.GetPreValueAsString(s));
-        }
+        //[HttpGet]
+        //public object GetPrevalues(int[] Ids)
+        //{
+        //    return Ids.Select(s => umbraco.library.GetPreValueAsString(s));
+        //}
         #endregion
 
 
@@ -101,9 +116,7 @@ namespace uCondition.Core.Controllers
         [HttpGet]
         public IEnumerable<GlobalConditionModel> GetAllGlobalConditions()
         {
-            var globalConditionsRepo = new GlobalConditionsRepository();
-
-            var globalConditions = globalConditionsRepo.GetAll(true);
+            var globalConditions = _globalConditionsRepository.GetAll();
 
             return globalConditions.Select(c => Mappers.DataToModel(c));
         }
@@ -111,8 +124,7 @@ namespace uCondition.Core.Controllers
         [HttpGet]
         public uConditionModel GetGlobalConditionData(string guid)
         {
-            var globalConditionsRepo = new GlobalConditionsRepository();
-            return JsonConvert.DeserializeObject<uConditionModel>(globalConditionsRepo.GetSingle(guid).Data);
+            return JsonConvert.DeserializeObject<uConditionModel>(_globalConditionsRepository.GetSingle(guid).Data);
         }
 
         [HttpPost]
@@ -120,13 +132,10 @@ namespace uCondition.Core.Controllers
         {
             var globalCondition = Mappers.ModelToData(model);
 
-            var globalConditionsRepo = new GlobalConditionsRepository();
-
-            var id = model.Id;
             if (model.Id == 0)
-                globalConditionsRepo.Insert(globalCondition);
+                _globalConditionsRepository.Insert(globalCondition);
             else
-                globalConditionsRepo.Update(globalCondition);
+                _globalConditionsRepository.Update(globalCondition);
 
             return Mappers.DataToModel(globalCondition);
         }
@@ -134,17 +143,15 @@ namespace uCondition.Core.Controllers
         [HttpDelete]
         public void DeleteGlobalCondition(int id)
         {
-            var globalConditionsRepo = new GlobalConditionsRepository();
-            globalConditionsRepo.Delete(id);
+            _globalConditionsRepository.Delete(id);
         }
         #endregion
 
-        private bool stringIsNumber(string value)
-        {
-            int result;
-            return int.TryParse(value, out result);
-        }
-        
+        //private bool StringIsNumber(string value)
+        //{
+        //    return int.TryParse(value, out _);
+        //}
+
     }
 
     //public static class ObjectToDictionaryHelper
