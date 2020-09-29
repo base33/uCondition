@@ -1,32 +1,47 @@
-﻿using System;
+﻿using NPoco;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Umbraco.Core;
+using Umbraco.Core.Logging;
 using Umbraco.Core.Persistence;
+using Umbraco.Core.Persistence.SqlSyntax;
+using Umbraco.Core.Scoping;
 
 namespace uCondition.Core.Data.Models
 {
     public class GlobalConditionsRepository
     {
-        protected UmbracoDatabase Database;
-
-        public GlobalConditionsRepository()
+        protected readonly IScopeAccessor scopeAccessor;
+        protected readonly IProfilingLogger logger;
+        protected IScope AmbientScope
         {
-            Database = ApplicationContext.Current.DatabaseContext.Database;
+            get
+            {
+                var scope = scopeAccessor.AmbientScope;
+                if (scope == null)
+                    throw new InvalidOperationException("Cannot run repository without an ambient scope");
+
+                return scope;
+            }
+        }
+        protected IUmbracoDatabase Database => AmbientScope.Database;
+        protected ISqlContext SqlContext => AmbientScope.SqlContext;
+        protected Sql<ISqlContext> Sql() => SqlContext.Sql();
+        protected ISqlSyntaxProvider SqlSyntax => SqlContext.SqlSyntax;
+
+        public GlobalConditionsRepository(IScopeAccessor scopeAccessor, IProfilingLogger logger)
+        {
+            this.scopeAccessor = scopeAccessor;
+            this.logger = logger;
         }
 
         /// <summary>
         /// Get all global conditions
         /// </summary>
-        /// <param name="withoutData"></param>
         /// <returns></returns>
-        public IEnumerable<GlobalCondition> GetAll(bool withoutData = false)
+        public IEnumerable<GlobalCondition> GetAll()
         {
-            var sql = new Sql()
-                .Select("*")
-                .From<GlobalCondition>(ApplicationContext.Current.DatabaseContext.SqlSyntax);
+            var sql = Sql().Select("*").From<GlobalCondition>();
 
             return Database.Fetch<GlobalCondition>(sql);
         }
@@ -38,10 +53,7 @@ namespace uCondition.Core.Data.Models
         /// <returns></returns>
         public GlobalCondition GetSingle(string guid)
         {
-            var sql = new Sql()
-                .Select("*")
-                .From<GlobalCondition>(ApplicationContext.Current.DatabaseContext.SqlSyntax)
-                .Where<GlobalCondition>(c => c.Guid == guid);
+            var sql = Sql().Select("*").From<GlobalCondition>().Where<GlobalCondition>(c => c.Guid == guid);
 
             return Database.FirstOrDefault<GlobalCondition>(sql);
         }
@@ -53,10 +65,7 @@ namespace uCondition.Core.Data.Models
         /// <returns></returns>
         public GlobalCondition GetSingle(int id)
         {
-            var sql = new Sql()
-                .Select("*")
-                .From<GlobalCondition>(ApplicationContext.Current.DatabaseContext.SqlSyntax)
-                .Where<GlobalCondition>(c => c.Id == id);
+            var sql = Sql().Select("*").From<GlobalCondition>().Where<GlobalCondition>(c => c.Id == id);
 
             return Database.FirstOrDefault<GlobalCondition>(sql);
         }
