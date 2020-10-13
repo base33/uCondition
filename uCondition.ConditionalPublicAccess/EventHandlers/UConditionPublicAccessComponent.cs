@@ -2,7 +2,6 @@
 using uCondition.ConditionalPublicAccess.Data;
 using Umbraco.Core;
 using Umbraco.Core.Composing;
-using Umbraco.Core.Models;
 using Umbraco.Core.Services;
 using Umbraco.Web.Models.Trees;
 using Umbraco.Web.Trees;
@@ -53,14 +52,11 @@ namespace uCondition.ConditionalPublicAccess.EventHandlers
                 "actionRoute",
                 $"/{sender.TreeAlias}/{sender.TreeAlias}/uconditionaccess/{e.NodeId}");
 
-            if (sender.TreeAlias == "content")
-            {
-                e.Menu.Items.Insert(12, menuItem);
-            }
-            else
-            {
-                e.Menu.Items.Insert(e.Menu.Items.Count - 1, menuItem);
-            }
+            e.Menu.Items.Insert(
+                sender.TreeAlias == "content"
+                    ? 12
+                    : e.Menu.Items.Count - 1,
+                menuItem);
         }
 
         private void ContentTreeController_TreeNodesRendering(TreeControllerBase sender, TreeNodesRenderingEventArgs e)
@@ -72,53 +68,31 @@ namespace uCondition.ConditionalPublicAccess.EventHandlers
 
             var protectedPages = new ProtectedPageProvider().Load();
 
-            if (sender.TreeAlias == "content")
+            foreach (var node in e.Nodes)
             {
-                foreach (var node in e.Nodes)
+                if (!int.TryParse((string)node.Id, out var nodeId))
                 {
-                    var nodeId = int.Parse((string)node.Id);
-
-                    if (nodeId <= 0)
-                    {
-                        continue;
-                    }
-
-                    IContent content = _contentService.GetById(nodeId);
-
-                    if (protectedPages.Pages.Any(c => c.Id == nodeId))
-                    {
-                        node.CssClasses.Add("uConditionAccess");
-                    }
-                    else if (protectedPages.Pages.Any(
-                        c => content.Path.IndexOf(c.Id.ToString()) >= 0))
-                    {
-                        node.CssClasses.Add("uConditionAccess");
-                        node.CssClasses.Add("inheritedAccess");
-                    }
+                    continue;
                 }
-            }
-            else
-            {
-                foreach (var node in e.Nodes)
+
+                var itemPath = sender.TreeAlias == "content"
+                               ? _contentService.GetById(nodeId)?.Path
+                               : _mediaService.GetById(nodeId)?.Path;
+
+                if (itemPath == null || string.IsNullOrWhiteSpace(itemPath))
                 {
-                    int nodeId = int.Parse((string)node.Id);
+                    continue;
+                }
 
-                    if (nodeId <= 0)
-                    {
-                        continue;
-                    }
-
-                    IMedia media = _mediaService.GetById(nodeId);
-
-                    if (protectedPages.Pages.Any(c => c.Id == nodeId))
-                    {
-                        node.CssClasses.Add("uConditionAccess");
-                    }
-                    else if (protectedPages.Pages.Any(c => media.Path.IndexOf(c.Id.ToString()) >= 0))
-                    {
-                        node.CssClasses.Add("uConditionAccess");
-                        node.CssClasses.Add("inheritedAccess");
-                    }
+                if (protectedPages.Pages.Any(c => c.Id == nodeId))
+                {
+                    node.CssClasses.Add("uConditionAccess");
+                }
+                else if (protectedPages.Pages.Any(
+                    c => itemPath.IndexOf(c.Id.ToString()) >= 0))
+                {
+                    node.CssClasses.Add("uConditionAccess");
+                    node.CssClasses.Add("inheritedAccess");
                 }
             }
         }
