@@ -32,8 +32,8 @@ namespace uCondition.ConditionalPublicAccess.EventHandlers
 
         public void Terminate()
         {
-            TreeControllerBase.TreeNodesRendering += ContentTreeController_TreeNodesRendering;
-            TreeControllerBase.MenuRendering += ContentTreeController_MenuRendering;
+            TreeControllerBase.TreeNodesRendering -= ContentTreeController_TreeNodesRendering;
+            TreeControllerBase.MenuRendering -= ContentTreeController_MenuRendering;
         }
 
         private void ContentTreeController_MenuRendering(TreeControllerBase sender, MenuRenderingEventArgs e)
