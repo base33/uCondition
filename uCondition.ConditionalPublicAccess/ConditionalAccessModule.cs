@@ -31,7 +31,7 @@ namespace uCondition.ConditionalPublicAccess
             var contentCache = umbracoContext.Content;
             var mediaService = Current.Services.MediaService;
 
-            //            UmbracoContext.EnsureContext((HttpContextBase)new HttpContextWrapper(context), ApplicationContext.Current, new WebSecurity((HttpContextBase)new HttpContextWrapper(context), ApplicationContext.Current));
+            //UmbracoContext.EnsureContext((HttpContextBase)new HttpContextWrapper(context), ApplicationContext.Current, new WebSecurity((HttpContextBase)new HttpContextWrapper(context), ApplicationContext.Current));
 
             IEnumerable<int> ids;
 
@@ -49,22 +49,22 @@ namespace uCondition.ConditionalPublicAccess
             }
             else
             {
-                IPublishedContent content = UmbracoContext.Current.ContentCache.GetByRoute(context.Request.Url.AbsolutePath, new bool?());
+                IPublishedContent content = contentCache.GetByRoute(context.Request.Url.AbsolutePath, new bool?());
                 if (content == null)
                 {
                     return;
                 }
 
-                ids = content.Path.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Select(c => int.Parse(c));
+                ids = content.Path
+                    .Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Select(c => int.Parse(c));
             }
 
-            if (ids == null && !ids.Any<int>())
+            if (ids == null && !ids.Any())
             {
                 return;
             }
 
             var protectedPage = new ProtectedPageProvider().LoadForPath(ids);
-
             if (protectedPage == null || ConditionalAccess.HasAccess(protectedPage))
             {
                 return;
@@ -74,11 +74,11 @@ namespace uCondition.ConditionalPublicAccess
             {
                 if (ConditionalAccess.TestCondition(condition.Condition))
                 {
-                    context.Response.Redirect("~" + new UmbracoHelper(UmbracoContext.Current).Url(condition.FalseActionNodeId) + "?returnUrl=" + context.Request.Url.AbsolutePath);
+                    context.Response.Redirect($"~{contentCache.GetById(condition.FalseActionNodeId).Url()}?returnUrl={context.Request.Url.AbsolutePath}");
                 }
             }
 
-            context.Response.Redirect("~" + new UmbracoHelper(UmbracoContext.Current).Url(protectedPage.FalseActionNodeId) + "?returnUrl=" + context.Request.Url.AbsolutePath);
+            context.Response.Redirect($"~{contentCache.GetById(protectedPage.FalseActionNodeId).Url()}?returnUrl={context.Request.Url.AbsolutePath}");
         }
     }
 }
