@@ -1,7 +1,6 @@
 ﻿<Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\packages\UmbracoCms.8.9.0\build\UmbracoCms.props" Condition="Exists('..\packages\UmbracoCms.8.9.0\build\UmbracoCms.props')" />
   <Import Project="..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props" Condition="Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" />
-  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.Default.props" Condition="Exists('$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.Default.props')" />
-  <Import Project="..\packages\UmbracoCms.8.6.3\build\UmbracoCms.props" Condition="Exists('..\packages\UmbracoCms.8.6.3\build\UmbracoCms.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -9,7 +8,7 @@
     <ProductVersion>
     </ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{59971A4B-B70B-419E-8FBD-5746EE44B3F3}</ProjectGuid>
+    <ProjectGuid>{774AAA01-9E11-4D93-B50A-66635F21D8EA}</ProjectGuid>
     <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
@@ -18,15 +17,13 @@
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <UseIISExpress>true</UseIISExpress>
     <Use64BitIISExpress />
-    <IISExpressSSLPort />
+    <IISExpressSSLPort>44311</IISExpressSSLPort>
     <IISExpressAnonymousAuthentication />
     <IISExpressWindowsAuthentication />
     <IISExpressUseClassicPipelineMode />
     <UseGlobalApplicationHostFile />
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
-    <TargetFrameworkProfile />
-    <TypeScriptToolsVersion>3.8</TypeScriptToolsVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -47,6 +44,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="AngleSharp, Version=0.9.9.0, Culture=neutral, PublicKeyToken=e83494dcdc6d31ea, processorArchitecture=MSIL">
+      <HintPath>..\packages\AngleSharp.0.9.11\lib\net45\AngleSharp.dll</HintPath>
+    </Reference>
     <Reference Include="ClientDependency.Core, Version=1.9.9.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ClientDependency.1.9.9\lib\net45\ClientDependency.Core.dll</HintPath>
     </Reference>
@@ -61,6 +61,9 @@
     </Reference>
     <Reference Include="HtmlAgilityPack, Version=1.8.14.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
       <HintPath>..\packages\HtmlAgilityPack.1.8.14\lib\Net45\HtmlAgilityPack.dll</HintPath>
+    </Reference>
+    <Reference Include="HtmlSanitizer, Version=4.0.0.0, Culture=neutral, PublicKeyToken=61c49a1a9e79cc28, processorArchitecture=MSIL">
+      <HintPath>..\packages\HtmlSanitizer.4.0.217\lib\net45\HtmlSanitizer.dll</HintPath>
     </Reference>
     <Reference Include="ICSharpCode.SharpZipLib, Version=0.86.0.518, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
       <HintPath>..\packages\SharpZipLib.0.86.0\lib\20\ICSharpCode.SharpZipLib.dll</HintPath>
@@ -100,9 +103,6 @@
     </Reference>
     <Reference Include="Microsoft.AspNet.SignalR.Core, Version=2.4.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNet.SignalR.Core.2.4.0\lib\net45\Microsoft.AspNet.SignalR.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform, Version=2.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\lib\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.Extensions.DependencyInjection.Abstractions, Version=2.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
@@ -180,7 +180,6 @@
     <Reference Include="Superpower, Version=1.0.0.0, Culture=neutral, PublicKeyToken=aec39280ded1b3a7, processorArchitecture=MSIL">
       <HintPath>..\packages\Superpower.2.0.0\lib\net45\Superpower.dll</HintPath>
     </Reference>
-    <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Data.Linq" />
     <Reference Include="System.Data.SqlServerCe, Version=4.0.0.1, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
       <HintPath>..\packages\Umbraco.SqlServerCE.4.0.0.1\lib\net472\System.Data.SqlServerCe.dll</HintPath>
@@ -215,9 +214,9 @@
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Web.Extensions" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Web" />
     <Reference Include="System.Web.Helpers, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.7\lib\net45\System.Web.Helpers.dll</HintPath>
     </Reference>
@@ -242,25 +241,32 @@
     <Reference Include="System.Web.WebPages.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.7\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
     </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Web.Services" />
     <Reference Include="System.EnterpriseServices" />
-    <Reference Include="System.Xml.Linq" />
     <Reference Include="Umbraco.Core, Version=8.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\UmbracoCms.Core.8.6.3\lib\net472\Umbraco.Core.dll</HintPath>
+      <HintPath>..\packages\UmbracoCms.Core.8.9.0\lib\net472\Umbraco.Core.dll</HintPath>
     </Reference>
     <Reference Include="Umbraco.Examine, Version=8.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\UmbracoCms.Web.8.6.3\lib\net472\Umbraco.Examine.dll</HintPath>
+      <HintPath>..\packages\UmbracoCms.Web.8.9.0\lib\net472\Umbraco.Examine.dll</HintPath>
     </Reference>
     <Reference Include="Umbraco.ModelsBuilder.Embedded, Version=8.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\UmbracoCms.Web.8.6.3\lib\net472\Umbraco.ModelsBuilder.Embedded.dll</HintPath>
+      <HintPath>..\packages\UmbracoCms.Web.8.9.0\lib\net472\Umbraco.ModelsBuilder.Embedded.dll</HintPath>
     </Reference>
     <Reference Include="Umbraco.Web, Version=8.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\UmbracoCms.Web.8.6.3\lib\net472\Umbraco.Web.dll</HintPath>
+      <HintPath>..\packages\UmbracoCms.Web.8.9.0\lib\net472\Umbraco.Web.dll</HintPath>
     </Reference>
     <Reference Include="Umbraco.Web.UI, Version=8.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\UmbracoCms.Web.8.6.3\lib\net472\Umbraco.Web.UI.dll</HintPath>
+      <HintPath>..\packages\UmbracoCms.Web.8.9.0\lib\net472\Umbraco.Web.UI.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform">
+      <HintPath>..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\lib\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -302,46 +308,60 @@
     <Content Include="App_Plugins\StarterKit\tours\views\medialibrary\uploadimages.html" />
     <Content Include="App_Plugins\StarterKit\tours\views\validatetext.controller.js" />
     <Content Include="App_Plugins\StarterKit\tours\views\validatetext.html" />
-    <Content Include="App_Plugins\uCondition\ControlPanels\GlobalConditions\globalconditions.editor.html" />
-    <Content Include="App_Plugins\uCondition\ControlPanels\GlobalConditions\globalconditions.html" />
-    <Content Include="App_Plugins\uCondition\ControlPanels\GlobalConditions\Scripts\app.js" />
-    <Content Include="App_Plugins\uCondition\ControlPanels\GlobalConditions\Scripts\controllers.js" />
-    <Content Include="App_Plugins\uCondition\ControlPanels\GlobalConditions\Scripts\directives.js" />
-    <Content Include="App_Plugins\uCondition\ControlPanels\GlobalConditions\Scripts\models.js" />
-    <Content Include="App_Plugins\uCondition\ControlPanels\GlobalConditions\Scripts\services.js" />
-    <Content Include="App_Plugins\uCondition\Editor\Dialogs\Add\AddAction.html" />
-    <Content Include="App_Plugins\uCondition\Editor\Dialogs\Add\AddCondition.html" />
-    <Content Include="App_Plugins\uCondition\Editor\Dialogs\Edit\uCondition.EditCondition.html" />
-    <Content Include="App_Plugins\uCondition\Editor\Scripts\app.js" />
-    <Content Include="App_Plugins\uCondition\Editor\Scripts\controllers.js" />
-    <Content Include="App_Plugins\uCondition\Editor\Scripts\directives.js" />
-    <Content Include="App_Plugins\uCondition\Editor\Scripts\models.js" />
-    <Content Include="App_Plugins\uCondition\Editor\Scripts\services.js" />
-    <Content Include="App_Plugins\uCondition\Editor\uCondition.html" />
-    <Content Include="App_Plugins\uCondition\Editor\uCondition.predicategroup.html" />
-    <Content Include="App_Plugins\uCondition\Editor\uCondition.swimlane.html" />
-    <Content Include="Config\grid.editors.config.js" />
-    <Content Include="Config\Lang\cs-CZ.user.xml" />
-    <Content Include="Config\Lang\da-DK.user.xml" />
-    <Content Include="Config\Lang\de-DE.user.xml" />
-    <Content Include="Config\Lang\en-GB.user.xml" />
-    <Content Include="Config\Lang\en-US.user.xml" />
-    <Content Include="Config\Lang\es-ES.user.xml" />
-    <Content Include="Config\Lang\fr-FR.user.xml" />
-    <Content Include="Config\Lang\he-IL.user.xml" />
-    <Content Include="Config\Lang\it-IT.user.xml" />
-    <Content Include="Config\Lang\ja-JP.user.xml" />
-    <Content Include="Config\Lang\ko-KR.user.xml" />
-    <Content Include="Config\Lang\nb-NO.user.xml" />
-    <Content Include="Config\Lang\nl-NL.user.xml" />
-    <Content Include="Config\Lang\pl-PL.user.xml" />
-    <Content Include="Config\Lang\pt-BR.user.xml" />
-    <Content Include="Config\Lang\ru-RU.user.xml" />
-    <Content Include="Config\Lang\sv-SE.user.xml" />
-    <Content Include="Config\Lang\zh-CN.user.xml" />
-    <Content Include="Config\logviewer.searches.config.js" />
+    <Content Include="App_Plugins\uCondition.PublicAccess\PublicAccess.html" />
+    <Content Include="App_Plugins\uCondition.PublicAccess\ucondition.publicaccess.css" />
+    <Content Include="App_Plugins\uCondition.PublicAccess\ucondition.publicaccess.js" />
+    <Content Include="config\grid.editors.config.js" />
+    <Content Include="config\Lang\cs-CZ.user.xml" />
+    <Content Include="config\Lang\da-DK.user.xml" />
+    <Content Include="config\Lang\de-DE.user.xml" />
+    <Content Include="config\Lang\en-GB.user.xml" />
+    <Content Include="config\Lang\en-US.user.xml" />
+    <Content Include="config\Lang\es-ES.user.xml" />
+    <Content Include="config\Lang\fr-FR.user.xml" />
+    <Content Include="config\Lang\he-IL.user.xml" />
+    <Content Include="config\Lang\it-IT.user.xml" />
+    <Content Include="config\Lang\ja-JP.user.xml" />
+    <Content Include="config\Lang\ko-KR.user.xml" />
+    <Content Include="config\Lang\nb-NO.user.xml" />
+    <Content Include="config\Lang\nl-NL.user.xml" />
+    <Content Include="config\Lang\pl-PL.user.xml" />
+    <Content Include="config\Lang\pt-BR.user.xml" />
+    <Content Include="config\Lang\ru-RU.user.xml" />
+    <Content Include="config\Lang\sv-SE.user.xml" />
+    <Content Include="config\Lang\zh-CN.user.xml" />
+    <Content Include="config\logviewer.searches.config.js" />
+    <Content Include="config\splashes\noNodes.aspx" />
     <Content Include="css\umbraco-starterkit-style.css" />
     <Content Include="Global.asax" />
+    <Content Include="Media\12gbvgbu\5852022091_87c5d045ab_b.jpg" />
+    <Content Include="Media\1d0davnu\18531852339_981b067419_h.jpg" />
+    <Content Include="Media\1o2pw3eu\16403439029_f500be349b_o.jpg" />
+    <Content Include="Media\3u0flot0\4730684907_8a7f8759cb_b.jpg" />
+    <Content Include="Media\bcwhvip1\18720470241_ff77768544_h.jpg" />
+    <Content Include="Media\kgmjusvw\7377957524_347859faac_b.jpg" />
+    <Content Include="Media\mbycrhnk\14272036539_469ca21d5c_h.jpg" />
+    <Content Include="Media\mywajcsy\5852022211_9028df67c0_b.jpg" />
+    <Content Include="Media\nbujtx2c\18530280048_459b8b61b2_h.jpg" />
+    <Content Include="Media\sichdqrq\7373036208_30257976a0_b.jpg" />
+    <Content Include="Media\SK_Temp\14272036539_469ca21d5c_h.jpg" />
+    <Content Include="Media\SK_Temp\16403439029_f500be349b_o.jpg" />
+    <Content Include="Media\SK_Temp\18095416144_44a566a5f4_h.jpg" />
+    <Content Include="Media\SK_Temp\18530280048_459b8b61b2_h.jpg" />
+    <Content Include="Media\SK_Temp\18531852339_981b067419_h.jpg" />
+    <Content Include="Media\SK_Temp\18531854019_351c579559_h.jpg" />
+    <Content Include="Media\SK_Temp\18720470241_ff77768544_h.jpg" />
+    <Content Include="Media\SK_Temp\4730684907_8a7f8759cb_b.jpg" />
+    <Content Include="Media\SK_Temp\5852022091_87c5d045ab_b.jpg" />
+    <Content Include="Media\SK_Temp\5852022211_9028df67c0_b.jpg" />
+    <Content Include="Media\SK_Temp\7371127652_e01b6ab56f_b.jpg" />
+    <Content Include="Media\SK_Temp\7373036208_30257976a0_b.jpg" />
+    <Content Include="Media\SK_Temp\7373036290_5e8420bf36_b.jpg" />
+    <Content Include="Media\SK_Temp\7377957524_347859faac_b.jpg" />
+    <Content Include="Media\sqloyvmt\7371127652_e01b6ab56f_b.jpg" />
+    <Content Include="Media\t1unutca\18531854019_351c579559_h.jpg" />
+    <Content Include="Media\yjghjism\7373036290_5e8420bf36_b.jpg" />
+    <Content Include="Media\yoqhywrp\18095416144_44a566a5f4_h.jpg" />
     <Content Include="scripts\umbraco-starterkit-app.js" />
     <Content Include="Web.config" />
   </ItemGroup>
@@ -349,34 +369,25 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Views\Web.config" />
-    <Content Include="Config\imageprocessor\security.config" />
-    <Content Include="Config\imageprocessor\processing.config" />
-    <Content Include="Config\imageprocessor\cache.config" />
+    <Content Include="config\imageprocessor\security.config" />
+    <Content Include="config\imageprocessor\processing.config" />
+    <Content Include="config\imageprocessor\cache.config" />
     <Content Include="Media\Web.config" />
-    <Content Include="Config\umbracoSettings.config" />
-    <Content Include="Config\tinyMceConfig.config" />
-    <Content Include="Config\serilog.user.config" />
-    <Content Include="Config\serilog.config" />
-    <Content Include="Config\HealthChecks.config" />
-    <Content Include="Config\ClientDependency.config" />
-    <Content Include="Config\BackOfficeTours\getting-started.json" />
+    <Content Include="config\umbracoSettings.config" />
+    <Content Include="config\tinyMceConfig.config" />
+    <Content Include="config\serilog.user.config" />
+    <Content Include="config\serilog.config" />
+    <Content Include="config\HealthChecks.config" />
+    <Content Include="config\ClientDependency.config" />
+    <Content Include="config\BackOfficeTours\getting-started.json" />
     <Content Include="App_Plugins\OsmMaps\package.manifest" />
     <Content Include="App_Plugins\StarterKit\backoffice\tours\create-content.json" />
     <Content Include="App_Plugins\StarterKit\backoffice\tours\data-structure.json" />
     <Content Include="App_Plugins\StarterKit\package.manifest" />
-    <Content Include="App_Plugins\uCondition\ControlPanels\GlobalConditions\Scripts\app.js.map" />
-    <Content Include="App_Plugins\uCondition\ControlPanels\GlobalConditions\Scripts\controllers.js.map" />
-    <Content Include="App_Plugins\uCondition\ControlPanels\GlobalConditions\Scripts\directives.js.map" />
-    <Content Include="App_Plugins\uCondition\ControlPanels\GlobalConditions\Scripts\models.js.map" />
-    <Content Include="App_Plugins\uCondition\ControlPanels\GlobalConditions\Scripts\services.js.map" />
-    <Content Include="App_Plugins\uCondition\Editor\Scripts\app.js.map" />
-    <Content Include="App_Plugins\uCondition\Editor\Scripts\controllers.js.map" />
-    <Content Include="App_Plugins\uCondition\Editor\Scripts\directives.js.map" />
-    <Content Include="App_Plugins\uCondition\Editor\Scripts\models.js.map" />
-    <Content Include="App_Plugins\uCondition\Editor\Scripts\services.js.map" />
-    <Content Include="App_Plugins\uCondition\package.manifest" />
+    <Content Include="App_Plugins\uCondition.PublicAccess\package.manifest" />
+    <Content Include="App_Plugins\uCondition.PublicAccess\ucondition.publicaccess.js.map" />
     <None Include="packages.config" />
+    <Content Include="Views\Web.config" />
     <Content Include="Views\Partials\Grid\Editors\Textstring.cshtml" />
     <Content Include="Views\Partials\Grid\Editors\Rte.cshtml" />
     <Content Include="Views\Partials\Grid\Editors\Media.cshtml" />
@@ -385,11 +396,14 @@
     <Content Include="Views\Partials\Grid\Editors\Base.cshtml" />
     <Content Include="Views\Partials\Grid\Bootstrap3.cshtml" />
     <Content Include="Views\Partials\Grid\Bootstrap3-Fluid.cshtml" />
+    <Content Include="Views\Partials\BlockList\Default.cshtml" />
     <Content Include="Views\Blog.cshtml" />
     <Content Include="Views\Blogpost.cshtml" />
     <Content Include="Views\contact.cshtml" />
     <Content Include="Views\contentPage.cshtml" />
     <Content Include="Views\home.cshtml" />
+    <Content Include="Views\MacroPartials\FeaturedProducts.cshtml" />
+    <Content Include="Views\MacroPartials\LatestBlogposts.cshtml" />
     <Content Include="Views\master.cshtml" />
     <Content Include="Views\Partials\CategoryLinks.cshtml" />
     <Content Include="Views\Partials\Navigation\SubNavigation.cshtml" />
@@ -399,8 +413,6 @@
     <Content Include="Views\Person.cshtml" />
     <Content Include="Views\Product.cshtml" />
     <Content Include="Views\Products.cshtml" />
-    <Content Include="Views\MacroPartials\FeaturedProducts.cshtml" />
-    <Content Include="Views\MacroPartials\LatestBlogposts.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -408,27 +420,11 @@
       <DependentUpon>Web.config</DependentUpon>
     </None>
   </ItemGroup>
-  <ItemGroup>
-    <TypeScriptCompile Include="App_Plugins\uCondition\ControlPanels\GlobalConditions\Scripts\app.ts" />
-    <TypeScriptCompile Include="App_Plugins\uCondition\ControlPanels\GlobalConditions\Scripts\controllers.ts" />
-    <TypeScriptCompile Include="App_Plugins\uCondition\ControlPanels\GlobalConditions\Scripts\directives.ts" />
-    <TypeScriptCompile Include="App_Plugins\uCondition\ControlPanels\GlobalConditions\Scripts\models.ts" />
-    <TypeScriptCompile Include="App_Plugins\uCondition\ControlPanels\GlobalConditions\Scripts\services.ts" />
-    <TypeScriptCompile Include="App_Plugins\uCondition\Editor\Scripts\app.ts" />
-    <TypeScriptCompile Include="App_Plugins\uCondition\Editor\Scripts\controllers.ts" />
-    <TypeScriptCompile Include="App_Plugins\uCondition\Editor\Scripts\directives.ts" />
-    <TypeScriptCompile Include="App_Plugins\uCondition\Editor\Scripts\models.ts" />
-    <TypeScriptCompile Include="App_Plugins\uCondition\Editor\Scripts\services.ts" />
-  </ItemGroup>
-  <ItemGroup>
-    <Service Include="{4A0DDDB5-7A95-4FBF-97CC-616D07737A77}" />
-  </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
   </PropertyGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
-  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets" Condition="Exists('$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets')" />
   <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />
   <ProjectExtensions>
@@ -437,9 +433,9 @@
         <WebProjectProperties>
           <UseIIS>True</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
-          <DevelopmentServerPort>16325</DevelopmentServerPort>
+          <DevelopmentServerPort>53300</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost:16325/</IISUrl>
+          <IISUrl>https://localhost:44311/</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>
@@ -453,13 +449,13 @@
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('..\packages\Umbraco.SqlServerCE.4.0.0.1\build\Umbraco.SqlServerCE.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Umbraco.SqlServerCE.4.0.0.1\build\Umbraco.SqlServerCE.targets'))" />
-    <Error Condition="!Exists('..\packages\UmbracoCms.8.6.3\build\UmbracoCms.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\UmbracoCms.8.6.3\build\UmbracoCms.props'))" />
-    <Error Condition="!Exists('..\packages\UmbracoCms.8.6.3\build\UmbracoCms.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\UmbracoCms.8.6.3\build\UmbracoCms.targets'))" />
     <Error Condition="!Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props'))" />
+    <Error Condition="!Exists('..\packages\Umbraco.SqlServerCE.4.0.0.1\build\Umbraco.SqlServerCE.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Umbraco.SqlServerCE.4.0.0.1\build\Umbraco.SqlServerCE.targets'))" />
+    <Error Condition="!Exists('..\packages\UmbracoCms.8.9.0\build\UmbracoCms.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\UmbracoCms.8.9.0\build\UmbracoCms.props'))" />
+    <Error Condition="!Exists('..\packages\UmbracoCms.8.9.0\build\UmbracoCms.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\UmbracoCms.8.9.0\build\UmbracoCms.targets'))" />
   </Target>
   <Import Project="..\packages\Umbraco.SqlServerCE.4.0.0.1\build\Umbraco.SqlServerCE.targets" Condition="Exists('..\packages\Umbraco.SqlServerCE.4.0.0.1\build\Umbraco.SqlServerCE.targets')" />
-  <Import Project="..\packages\UmbracoCms.8.6.3\build\UmbracoCms.targets" Condition="Exists('..\packages\UmbracoCms.8.6.3\build\UmbracoCms.targets')" />
+  <Import Project="..\packages\UmbracoCms.8.9.0\build\UmbracoCms.targets" Condition="Exists('..\packages\UmbracoCms.8.9.0\build\UmbracoCms.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
