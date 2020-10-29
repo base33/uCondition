@@ -38,7 +38,7 @@ namespace uCondition.ConditionalPublicAccess.EventHandlers
 
         private void ContentTreeController_MenuRendering(TreeControllerBase sender, MenuRenderingEventArgs e)
         {
-            if (sender.TreeAlias != "content" && sender.TreeAlias != "media")
+            if (sender.TreeAlias != "content" && sender.TreeAlias != "media" && e.NodeId == "-1")
             {
                 return;
             }
@@ -52,11 +52,8 @@ namespace uCondition.ConditionalPublicAccess.EventHandlers
                 "actionRoute",
                 $"/{sender.TreeAlias}/{sender.TreeAlias}/uconditionaccess/{e.NodeId}");
 
-            e.Menu.Items.Insert(
-                sender.TreeAlias == "content"
-                    ? 12
-                    : e.Menu.Items.Count - 1,
-                menuItem);
+            var protectMenuItemIndex = e.Menu.Items.FindIndex(x => x.Alias == "protect");
+            e.Menu.Items.Insert(protectMenuItemIndex + 1, menuItem);
         }
 
         private void ContentTreeController_TreeNodesRendering(TreeControllerBase sender, TreeNodesRenderingEventArgs e)

@@ -420,6 +420,12 @@
       <DependentUpon>Web.config</DependentUpon>
     </None>
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\uCondition.ConditionalPublicAccess\uCondition.ConditionalPublicAccess.csproj">
+      <Project>{4739bad7-9fcf-4e74-9c68-fc82f7aa20c4}</Project>
+      <Name>uCondition.ConditionalPublicAccess</Name>
+    </ProjectReference>
+  </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
