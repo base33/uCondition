@@ -1,11 +1,5 @@
-﻿using Newtonsoft.Json;
-using System.Collections.Generic;
-using System.Web;
+﻿using System.Collections.Generic;
 using uCondition.Interfaces;
-using Umbraco.Core;
-using Umbraco.Web;
-using Umbraco.Web.Composing;
-using Umbraco.Web.Security;
 
 namespace uCondition.Models
 {
