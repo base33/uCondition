@@ -28,10 +28,10 @@ var uConditionPublicAccess;
                 var menuActions = this.AppState.getMenuState('menuActions');
                 var menuTitle = this.AppState.getMenuState('dialogTitle');
                 var metaData = menuActions.find(function (element) {
-                        if (element.name === menuTitle) {
-                            return element.name
-                        }
-                    }).metaData;
+                    if (element.name === menuTitle) {
+                        return element.name
+                    }
+                }).metaData;
 
                 var resource = $routeParams.section == "content" ? contentResource : mediaResource;
                 resource.getById(metaData.nodeId).then(function (data) {
@@ -148,34 +148,46 @@ var uConditionPublicAccess;
     })(Services = uConditionPublicAccess.Services || (uConditionPublicAccess.Services = {}));
 })(uConditionPublicAccess || (uConditionPublicAccess = {}));
 
-angular.module("umbraco.directives").directive("uconditionContentPicker", [function uConditionContentPicker($scope) {
-    return {
-        restrict: 'E',
-        replace: false,
-        scope: {
-            model: '=model'
-        },
-        template: "<umb-editor ng-if='property' model='property'></umb-editor>",
-        link: function (scope, element, attrs) {
-            scope.property = {
-                view: 'contentpicker',
-                alias: 'contentpicker',
-                config: {
-                    minNumber: 0,
-                    maxNumber: 1
-                },
-                value: scope.model.toString()
-            };
-            console.log(scope.model);
-            setTimeout(function () {
-                scope.$watch(function () { return scope.model; }, function () { return scope.property.value = scope.model.toString(); });
-            }, 200);
-            setTimeout(function () {
-                scope.$watch(function () { return scope.property.value; }, function () { return scope.model = scope.property.value != "" ? parseInt(scope.property.value) : 0; });
-            }, 200);
-        }
-    };
-}]);
+//angular.module("umbraco.directives")
+//    .directive("uconditionContentPicker", function uConditionContentPicker() {
+//        return {
+//            restrict: 'E',
+//            replace: false,
+//            scope: {
+//                model: '=model'
+//            },
+//            template: "<umb-editor ng-if='property' model='property'></umb-editor>",
+//            link: function (scope, element, attrs) {
+//                console.log("link scope....");
+//                console.log(scope);
+//                scope.property = {
+//                    view: 'contentpicker',
+//                    alias: 'contentpicker',
+//                    config: {
+//                        minNumber: 0,
+//                        maxNumber: 1
+//                    },
+//                    value: scope.model.toString()
+//                };
+
+//                setTimeout(function () {
+//                    scope.$watch(function () {
+//                        return scope.model;
+//                    }, function () {
+//                        return scope.property.value = scope.model.toString();
+//                    });
+//                }, 200);
+
+//                setTimeout(function () {
+//                    scope.$watch(function () {
+//                        return scope.property.value;
+//                    }, function () {
+//                        return scope.model = scope.property.value != "" ? parseInt(scope.property.value) : 0;
+//                    });
+//                }, 200);
+//            }
+//        };
+//    });
 angular.module("umbraco.directives").directive("uconditionEditor", [function uConditionEditor($scope) {
     return {
         restrict: 'E',

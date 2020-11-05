@@ -30,10 +30,10 @@ var uCondition;
         }());
         Controllers.uConditionController = uConditionController;
         var PredicateGroupController = (function () {
-            function PredicateGroupController($scope, $timeout, dialogService) {
+            function PredicateGroupController($scope, $timeout, editorService) {
                 this.$scope = $scope;
                 this.$timeout = $timeout;
-                this.dialogService = dialogService;
+                this.dialogService = editorService;
                 this.ModalDialog = $scope.modalDialog;
             }
             PredicateGroupController.prototype.GetConditionFieldSummary = function (condition) {
@@ -265,7 +265,7 @@ var uCondition;
                 this.uConditionApiService = uConditionApiService;
                 var that = this;
                 $scope.filterGroup = "All";
-                uConditionApiService.GetPredicates().success(function (predicateConfigs) {
+                uConditionApiService.GetPredicates().then(function (predicateConfigs) {
                     var groups = {};
                     groups["Special"] = [new uCondition.Models.PredicateGroup()];
                     for (var i = 0; i < predicateConfigs.length; i++) {
@@ -327,7 +327,7 @@ var uCondition;
                 this.uConditionApiService = uConditionApiService;
                 var that = this;
                 $scope.filterGroup = "All";
-                uConditionApiService.GetActions().success(function (predicateConfigs) {
+                uConditionApiService.GetActions().then(function (predicateConfigs) {
                     var groups = {};
                     for (var i = 0; i < predicateConfigs.length; i++) {
                         if (typeof groups[predicateConfigs[i].Category] == "undefined")
@@ -408,7 +408,7 @@ var uCondition;
             }
             PredicateSyncService.prototype.SyncPredicateGroups = function (predicateGroups) {
                 var that = this;
-                this.uConditionApiService.GetPredicates().success(function (predicateConfigs) {
+                this.uConditionApiService.GetPredicates().then(function (predicateConfigs) {
                     for (var i = 0; i < predicateGroups.length; i++) {
                         that.SyncPredicateGroup(predicateGroups[i], predicateConfigs);
                     }
@@ -416,7 +416,7 @@ var uCondition;
             };
             //public SyncActions(actions: Array<Models.Action>) {
             //    var that = this;
-            //    this.uConditionApiService.GetActions().success(function (predicateConfigs) {
+            //    this.uConditionApiService.GetActions().then(function (predicateConfigs) {
             //        for (var i = 0; i < actions.length; i++) {
             //            that.SyncPredicate(<any>actions[i], that.FindPredicateConfigByAlias(actions[i].Config.Alias, predicateConfigs));
             //        }
@@ -450,7 +450,7 @@ var uCondition;
     })(Services = uCondition.Services || (uCondition.Services = {}));
 })(uCondition || (uCondition = {}));
 angular.module("umbraco").controller("uCondition", ["$scope", "PredicateSyncService", uCondition.Controllers.uConditionController]);
-angular.module("umbraco").controller("uCondition.PredicateGroup", ["$scope", "$timeout", "dialogService", uCondition.Controllers.PredicateGroupController]);
+angular.module("umbraco").controller("uCondition.PredicateGroup", ["$scope", "$timeout", "editorService", uCondition.Controllers.PredicateGroupController]);
 angular.module("umbraco").controller("uCondition.Dialogs.AddCondition", ["$scope", "uConditionApiService", uCondition.Controllers.AddConditionDialog]);
 angular.module("umbraco").controller("uCondition.Dialogs.AddAction", ["$scope", "uConditionApiService", uCondition.Controllers.AddActionDialog]);
 angular.module("umbraco").controller("uCondition.Editors.GenericEditor", ["$scope", "uConditionApiService", uCondition.Controllers.EditConditionDialog]);

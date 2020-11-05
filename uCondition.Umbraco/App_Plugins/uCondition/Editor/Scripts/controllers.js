@@ -32,10 +32,10 @@ var uCondition;
             }());
             Controllers.uConditionController = uConditionController;
             var PredicateGroupController = (function () {
-                function PredicateGroupController($scope, $timeout, dialogService) {
+                function PredicateGroupController($scope, $timeout, editorService) {
                     this.$scope = $scope;
                     this.$timeout = $timeout;
-                    this.dialogService = dialogService;
+                    this.dialogService = editorService;
                     this.ModalDialog = $scope.modalDialog;
                 }
                 PredicateGroupController.prototype.GetConditionFieldSummary = function (condition) {
@@ -204,32 +204,32 @@ var uCondition;
                             condition.Values.push(fieldValue);
                         }
                         this.uConditionApiService.GetPropertyEditorByName(currentField.Control)
-                            .success((function (field, value, index) {
-                            return function (dataType) {
-                                //add the field wrapper, which holds the property editor model and the name for display
-                                var fieldWrapper = {
-                                    Name: field.Name,
-                                    Alias: field.Alias,
-                                    PropertyEditorModel: {},
-                                    SortOrder: index,
+                            .then((function (field, value, index) {
+                                return function (dataType) {
+                                    //add the field wrapper, which holds the property editor model and the name for display
+                                    var fieldWrapper = {
+                                        Name: field.Name,
+                                        Alias: field.Alias,
+                                        PropertyEditorModel: {},
+                                        SortOrder: index,
+                                    };
+                                    if (dataType == "null") {
+                                        fieldWrapper.PropertyEditorModel.view = field.Control;
+                                        fieldWrapper.PropertyEditorModel.alias = field.Alias;
+                                        fieldWrapper.PropertyEditorModel.value = value.Value;
+                                        fieldWrapper.PropertyEditorModel.preview = false;
+                                        fields.push(fieldWrapper);
+                                    }
+                                    else {
+                                        fieldWrapper.PropertyEditorModel.view = dataType.view;
+                                        fieldWrapper.PropertyEditorModel.alias = field.Alias;
+                                        fieldWrapper.PropertyEditorModel.value = value.Value;
+                                        fieldWrapper.PropertyEditorModel.preview = false;
+                                        fieldWrapper.PropertyEditorModel.config = dataType.prevalues;
+                                        fields.push(fieldWrapper);
+                                    }
                                 };
-                                if (dataType == "null") {
-                                    fieldWrapper.PropertyEditorModel.view = field.Control;
-                                    fieldWrapper.PropertyEditorModel.alias = field.Alias;
-                                    fieldWrapper.PropertyEditorModel.value = value.Value;
-                                    fieldWrapper.PropertyEditorModel.preview = false;
-                                    fields.push(fieldWrapper);
-                                }
-                                else {
-                                    fieldWrapper.PropertyEditorModel.view = dataType.view;
-                                    fieldWrapper.PropertyEditorModel.alias = field.Alias;
-                                    fieldWrapper.PropertyEditorModel.value = value.Value;
-                                    fieldWrapper.PropertyEditorModel.preview = false;
-                                    fieldWrapper.PropertyEditorModel.config = dataType.prevalues;
-                                    fields.push(fieldWrapper);
-                                }
-                            };
-                        })(currentField, fieldValue, i));
+                            })(currentField, fieldValue, i));
                     }
                     return fields;
                 };
@@ -270,42 +270,46 @@ var uCondition;
                     this.uConditionApiService = uConditionApiService;
                     var that = this;
                     $scope.filterGroup = "All";
-                    uConditionApiService.GetPredicates().success(function (predicateConfigs) {
-                        var groups = {};
-                        groups["Special"] = [new uCondition.Editor.Models.PredicateGroup()];
-                        for (var i = 0; i < predicateConfigs.length; i++) {
-                            if (typeof groups[predicateConfigs[i].Category] == "undefined")
-                                groups[predicateConfigs[i].Category] = [];
-                            var predicate = new uCondition.Editor.Models.Predicate();
-                            predicate.Config = predicateConfigs[i];
-                            groups[predicateConfigs[i].Category].push(predicate);
-                        }
-                        that.$scope.groups = [];
-                        for (var group in groups) {
-                            var predicateGroup = new uCondition.Editor.Models.Dialogs.ConditionGroup();
-                            predicateGroup.Name = group;
-                            for (var i = 0; i < groups[group].length; i++) {
-                                var predicateOption = new uCondition.Editor.Models.Dialogs.ConditionOption();
-                                predicateOption.Condition = groups[group][i];
-                                predicateGroup.Conditions.push(predicateOption);
+
+                    uConditionApiService.GetPredicates()
+                        .then(function (predicateConfigs) {
+                            var groups = {};
+                            groups["Special"] = [new uCondition.Editor.Models.PredicateGroup()];
+                            for (var i = 0; i < predicateConfigs.length; i++) {
+                                if (typeof groups[predicateConfigs[i].Category] == "undefined")
+                                    groups[predicateConfigs[i].Category] = [];
+                                var predicate = new uCondition.Editor.Models.Predicate();
+                                predicate.Config = predicateConfigs[i];
+                                groups[predicateConfigs[i].Category].push(predicate);
                             }
-                            that.$scope.groups.push(predicateGroup);
-                        }
-                        that.$scope.groups.sort(function (a, b) {
-                            if (a.Name == "Special")
-                                return -2;
-                            if (a.Name < b.Name)
-                                return -1;
-                            if (a.Name > b.Name)
-                                return 1;
-                            return 0;
+                            that.$scope.groups = [];
+                            for (var group in groups) {
+                                var predicateGroup = new uCondition.Editor.Models.Dialogs.ConditionGroup();
+                                predicateGroup.Name = group;
+                                for (var i = 0; i < groups[group].length; i++) {
+                                    var predicateOption = new uCondition.Editor.Models.Dialogs.ConditionOption();
+                                    predicateOption.Condition = groups[group][i];
+                                    predicateGroup.Conditions.push(predicateOption);
+                                }
+                                that.$scope.groups.push(predicateGroup);
+                            }
+                            that.$scope.groups.sort(function (a, b) {
+                                if (a.Name == "Special")
+                                    return -2;
+                                if (a.Name < b.Name)
+                                    return -1;
+                                if (a.Name > b.Name)
+                                    return 1;
+                                return 0;
+                            });
                         });
-                    });
+
                     $scope.FilterGroups = function (groupName) {
                         for (var i = 0; i < $scope.groups.length; i++) {
                             $scope.groups[i].Show = $scope.groups[i].Name == groupName || groupName == "All";
                         }
                     };
+
                     $scope.FilterAllByText = function (text) {
                         text = text.toLowerCase();
                         for (var i = 0; i < $scope.groups.length; i++) {
@@ -319,6 +323,7 @@ var uCondition;
                                 $scope.groups[i].Show = showCount > 0;
                         }
                     };
+
                     this.$scope.$on("formSubmitting", function () {
                         $scope.model.value = [];
                         for (var i = 0; i < $scope.groups.length; i++) {
@@ -341,32 +346,36 @@ var uCondition;
                     this.uConditionApiService = uConditionApiService;
                     var that = this;
                     $scope.filterGroup = "All";
-                    uConditionApiService.GetActions().success(function (predicateConfigs) {
-                        var groups = {};
-                        for (var i = 0; i < predicateConfigs.length; i++) {
-                            if (typeof groups[predicateConfigs[i].Category] == "undefined")
-                                groups[predicateConfigs[i].Category] = [];
-                            var predicate = new uCondition.Editor.Models.Action();
-                            predicate.Config = predicateConfigs[i];
-                            groups[predicateConfigs[i].Category].push(predicate);
-                        }
-                        that.$scope.groups = [];
-                        for (var group in groups) {
-                            var predicateGroup = new uCondition.Editor.Models.Dialogs.ConditionGroup();
-                            predicateGroup.Name = group;
-                            for (var i = 0; i < groups[group].length; i++) {
-                                var predicateOption = new uCondition.Editor.Models.Dialogs.ConditionOption();
-                                predicateOption.Condition = groups[group][i];
-                                predicateGroup.Conditions.push(predicateOption);
+
+                    uConditionApiService.GetActions()
+                        .then(function (predicateConfigs) {
+                            var groups = {};
+                            for (var i = 0; i < predicateConfigs.length; i++) {
+                                if (typeof groups[predicateConfigs[i].Category] == "undefined")
+                                    groups[predicateConfigs[i].Category] = [];
+                                var predicate = new uCondition.Editor.Models.Action();
+                                predicate.Config = predicateConfigs[i];
+                                groups[predicateConfigs[i].Category].push(predicate);
                             }
-                            that.$scope.groups.push(predicateGroup);
-                        }
-                    });
+                            that.$scope.groups = [];
+                            for (var group in groups) {
+                                var predicateGroup = new uCondition.Editor.Models.Dialogs.ConditionGroup();
+                                predicateGroup.Name = group;
+                                for (var i = 0; i < groups[group].length; i++) {
+                                    var predicateOption = new uCondition.Editor.Models.Dialogs.ConditionOption();
+                                    predicateOption.Condition = groups[group][i];
+                                    predicateGroup.Conditions.push(predicateOption);
+                                }
+                                that.$scope.groups.push(predicateGroup);
+                            }
+                        });
+
                     $scope.FilterGroups = function (groupName) {
                         for (var i = 0; i < $scope.groups.length; i++) {
                             $scope.groups[i].Show = $scope.groups[i].Name == groupName || groupName == "All";
                         }
                     };
+
                     $scope.FilterAllByText = function (text) {
                         text = text.toLowerCase();
                         for (var i = 0; i < $scope.groups.length; i++) {
@@ -380,6 +389,7 @@ var uCondition;
                                 $scope.groups[i].Show = showCount > 0;
                         }
                     };
+
                     this.$scope.$on("formSubmitting", function () {
                         $scope.model.value = [];
                         for (var i = 0; i < $scope.groups.length; i++) {

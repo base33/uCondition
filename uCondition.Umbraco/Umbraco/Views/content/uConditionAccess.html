@@ -14,19 +14,6 @@
                 </umb-box-header>
                 <umb-box-container>
                     <umb-box-content>
-                        <!--<div>
-        <h5>Detected changes</h5>
-        <div>
-            <p>Lorem...</p>
-        </div>
-    </div>
-
-    <div>
-        <h5>Detected changes</h5>
-        <div>
-            <p>Lorem...</p>
-        </div>
-    </div>-->
                         <div class="abstract">
                             <h5>Conditional page protection</h5>
                         </div>
@@ -57,8 +44,8 @@
 
                                 <div class="advancedCondition" ng-repeat="subAction in vm.EditorModel.Conditions">
                                     <h6>
-                                        <a ng-click="vm.Move(Ctrl.EditorModel.Conditions, $index, $index-1)" title="move up"><i class="icon icon-navigation-up"></i></a>
-                                        <a ng-click="vm.Move(Ctrl.EditorModel.Conditions, $index, $index+1)" title="move down"><i class="icon icon-navigation-down"></i></a>
+                                        <a ng-click="vm.Move(vm.EditorModel.Conditions, $index, $index-1)" title="move up"><i class="icon icon-navigation-up"></i></a>
+                                        <a ng-click="vm.Move(vm.EditorModel.Conditions, $index, $index+1)" title="move down"><i class="icon icon-navigation-down"></i></a>
                                         Conditional Action {{$index + 1}}
                                         <a ng-click="vm.EditorModel.Conditions.splice($index, 1)" class="removeButton"><i class="icon icon-delete red"></i> remove</a>
                                     </h6>
@@ -91,12 +78,12 @@
                 <umb-button type="button"
                             button-style="danger"
                             label-key="general_remove"
-                            action="vm.removeProtection()">
+                            action="vm.RemoveProtection()">
                 </umb-button>
                 <umb-button type="button"
                             button-style="primary"
                             label-key="buttons_save"
-                            action="vm.saveChanges()">
+                            action="vm.SaveChanges()">
                 </umb-button>
             </umb-editor-footer-content-right>
         </umb-editor-footer>

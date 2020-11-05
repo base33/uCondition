@@ -26,7 +26,7 @@ var uCondition;
                 }
                 PredicateSyncService.prototype.SyncPredicateGroups = function (predicateGroups) {
                     var that = this;
-                    this.uConditionApiService.GetPredicates().success(function (predicateConfigs) {
+                    this.uConditionApiService.GetPredicates().then(function (predicateConfigs) {
                         for (var i = 0; i < predicateGroups.length; i++) {
                             that.SyncPredicateGroup(predicateGroups[i], predicateConfigs);
                         }
