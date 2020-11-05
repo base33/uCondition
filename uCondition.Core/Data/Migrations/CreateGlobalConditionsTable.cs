@@ -16,7 +16,7 @@ namespace uCondition.Core.Data.Migrations
 
             if (TableExists("GlobalConditions") == false)
             {
-                Create.Table<GlobalCondition>();
+                Create.Table<GlobalCondition>().Do();
             }
         }
     }

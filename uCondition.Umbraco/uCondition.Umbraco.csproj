@@ -420,6 +420,10 @@
       <Project>{4739bad7-9fcf-4e74-9c68-fc82f7aa20c4}</Project>
       <Name>uCondition.ConditionalPublicAccess</Name>
     </ProjectReference>
+    <ProjectReference Include="..\uCondition.Core\uCondition.Core.csproj">
+      <Project>{2114ae18-b132-4427-a94a-f3062017d41b}</Project>
+      <Name>uCondition.Core</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

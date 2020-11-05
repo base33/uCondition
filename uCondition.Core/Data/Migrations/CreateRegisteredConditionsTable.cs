@@ -16,7 +16,7 @@ namespace uCondition.Core.Data.Migrations
 
             if (TableExists("RegisteredPredicates") == false)
             {
-                Create.Table<RegisteredPredicate>();
+                Create.Table<RegisteredPredicate>().Do();
             }
         }
     }

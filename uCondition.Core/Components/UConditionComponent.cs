@@ -15,7 +15,8 @@ namespace uCondition.Core.Components
         private readonly IKeyValueService _keyValueService;
         private readonly ILogger _logger;
 
-        public UConditionComponent(IScopeProvider scopeProvider, IMigrationBuilder migrationBuilder, IKeyValueService keyValueService, ILogger logger)
+        public UConditionComponent(IScopeProvider scopeProvider, IMigrationBuilder migrationBuilder,
+            IKeyValueService keyValueService, ILogger logger)
         {
             _scopeProvider = scopeProvider;
             _migrationBuilder = migrationBuilder;
