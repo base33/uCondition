@@ -38,19 +38,21 @@ namespace uCondition.ConditionalPublicAccess.EventHandlers
 
         private void ContentTreeController_MenuRendering(TreeControllerBase sender, MenuRenderingEventArgs e)
         {
-            if (sender.TreeAlias != "content" && sender.TreeAlias != "media" && e.NodeId == "-1")
+            if (sender.TreeAlias != "content" && sender.TreeAlias != "media")
             {
                 return;
             }
 
-            var menuItem = new MenuItem("conditionalPublicAccess", "Conditional Access")
+            var menuItem = new MenuItem("uConditionAccess", "Conditional Access")
             {
-                Icon = "code"
+                Icon = "code",
+                OpensDialog = true
             };
 
-            menuItem.AdditionalData.Add(
-                "actionRoute",
-                $"/{sender.TreeAlias}/{sender.TreeAlias}/uconditionaccess/{e.NodeId}");
+            menuItem.AdditionalData.Add("nodeId", e.NodeId);
+            //menuItem.AdditionalData.Add(
+            //    "actionRoute",
+            //    $"/{sender.TreeAlias}/{sender.TreeAlias}/uconditionaccess/{e.NodeId}");
 
             var protectMenuItemIndex = e.Menu.Items.FindIndex(x => x.Alias == "protect");
             e.Menu.Items.Insert(protectMenuItemIndex + 1, menuItem);

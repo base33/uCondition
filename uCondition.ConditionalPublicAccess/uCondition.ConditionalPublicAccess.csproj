@@ -319,6 +319,7 @@
     <Error Condition="!Exists('..\packages\Umbraco.SqlServerCE.4.0.0.1\build\Umbraco.SqlServerCE.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Umbraco.SqlServerCE.4.0.0.1\build\Umbraco.SqlServerCE.targets'))" />
   </Target>
   <PropertyGroup>
-    <PostBuildEvent>xcopy /E /Y "$(ProjectDir)App_Plugins" "$(SolutionDir)uCondition.Umbraco\App_Plugins"</PostBuildEvent>
+    <PostBuildEvent>xcopy /E /Y "$(ProjectDir)App_Plugins" "$(SolutionDir)uCondition.Umbraco\App_Plugins"
+xcopy /E /Y "$(ProjectDir)Umbraco" "$(SolutionDir)uCondition.Umbraco\Umbraco"</PostBuildEvent>
   </PropertyGroup>
 </Project>
