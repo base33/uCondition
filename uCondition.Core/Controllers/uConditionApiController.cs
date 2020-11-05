@@ -18,7 +18,8 @@ namespace uCondition.Core.Controllers
         private readonly IGlobalConditionsRepository _globalConditionsRepository;
         private readonly IPredicateManager _predicateManager;
 
-        public UConditionApiController(IDataTypeService dataTypeService, IGlobalConditionsRepository globalConditionsRepository, PropertyEditorCollection propertyEditors, IPredicateManager predicateManager)
+        public UConditionApiController(IDataTypeService dataTypeService, IGlobalConditionsRepository globalConditionsRepository,
+            PropertyEditorCollection propertyEditors, IPredicateManager predicateManager)
         {
             _dataTypeService = dataTypeService;
             _globalConditionsRepository = globalConditionsRepository;
@@ -52,7 +53,7 @@ namespace uCondition.Core.Controllers
                 return null;
             }
 
-            if(!_propertyEditors.TryGet(datatype.EditorAlias, out var propertyType))
+            if (!_propertyEditors.TryGet(datatype.EditorAlias, out var propertyType))
             {
                 return null;
             }
@@ -61,7 +62,7 @@ namespace uCondition.Core.Controllers
             var preValuesFromDb = (ValueListConfiguration)datatype.Configuration;
             var preValues = new Dictionary<string, object>();
 
-            foreach(var item in preValuesFromDb.Items)
+            foreach (var item in preValuesFromDb.Items)
             {
                 preValues.Add(item.Id.ToString(), item.Value);
             }
