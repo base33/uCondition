@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Web;
+using System.Web.Mvc;
 using uCondition.ConditionalPublicAccess.Data;
 using uCondition.ConditionalPublicAccess.Helpers;
 using Umbraco.Core.Models.PublishedContent;
@@ -19,19 +20,18 @@ namespace uCondition.ConditionalPublicAccess
 
         public void Init(HttpApplication context)
         {
-            context.AuthenticateRequest += Context_BeginRequest;
+            context.AuthenticateRequest +=
+                (sender, e) => Context_BeginRequest(new HttpContextWrapper(((HttpApplication)sender).Context));
         }
 
-        private void Context_BeginRequest(object sender, EventArgs e)
+        private void Context_BeginRequest(HttpContextBase context)
         {
-            var context = ((HttpApplication)sender).Context;
+            EnsureUmbracoContext(context);
 
             var umbracoContext = Current.UmbracoContext;
             var umbracoHelper = Current.UmbracoHelper;
             var contentCache = umbracoContext.Content;
             var mediaService = Current.Services.MediaService;
-
-            //UmbracoContext.EnsureContext((HttpContextBase)new HttpContextWrapper(context), ApplicationContext.Current, new WebSecurity((HttpContextBase)new HttpContextWrapper(context), ApplicationContext.Current));
 
             IEnumerable<int> ids;
 
@@ -65,7 +65,8 @@ namespace uCondition.ConditionalPublicAccess
             }
 
             var protectedPage = new ProtectedPageProvider().LoadForPath(ids);
-            if (protectedPage == null || ConditionalAccess.HasAccess(protectedPage))
+            var hasAccess = ConditionalAccess.HasAccess(protectedPage);
+            if (protectedPage == null || hasAccess)
             {
                 return;
             }
@@ -79,6 +80,18 @@ namespace uCondition.ConditionalPublicAccess
             }
 
             context.Response.Redirect($"~{contentCache.GetById(protectedPage.FalseActionNodeId).Url()}?returnUrl={context.Request.Url.AbsolutePath}");
+        }
+
+        private UmbracoContext EnsureUmbracoContext(HttpContextBase context)
+        {
+            if (Current.UmbracoContext != null)
+            {
+                return Current.UmbracoContext;
+            }
+
+            // Hacky...
+            var umbracoContextFactory = DependencyResolver.Current.GetService<IUmbracoContextFactory>();
+            return umbracoContextFactory.EnsureUmbracoContext(context).UmbracoContext;
         }
     }
 }

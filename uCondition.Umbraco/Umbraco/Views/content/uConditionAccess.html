@@ -1,16 +1,11 @@
 ﻿<div ng-controller="uCondition.PublicAccess as vm">
-    <umb-editor-panel>
-        <!--<umb-editor-header name="Configure access to"
-                           name-locked="true"
-                           hide-alias="true"
-                           hide-icon="true"
-                           hide-description="true">
-        </umb-editor-header>-->
-
+    <umb-editor-view>
         <umb-editor-container>
+            <umb-load-indicator ng-if="vm.loading">
+            </umb-load-indicator>
+
             <umb-box>
                 <umb-box-content>
-
                     <umb-box-header title="Detected changes"
                                     description="Description...">
                     </umb-box-header>
@@ -23,14 +18,12 @@
                                 <ucondition-editor value="vm.EditorModel.Condition"></ucondition-editor>
                             </div>
 
-                            <div class="uCondition-contentpickercontainer">
-                                <p>
-                                    If false, the user should be redirect to:
-                                    <span ng-if="editModel != null" class="uConditionContentPicker" ng-class="{'add': vm.EditorModel.FalseActionNodeId == '' || vm.EditorModel.FalseActionNodeId == 0 }">
-                                        <ucondition-content-picker model="Ctrl.EditorModel.FalseActionNodeId"></ucondition-content-picker>
-                                    </span>
-                                </p>
-                            </div>
+                            <!--<div class="uCondition-contentpickercontainer">
+                                <p>If false, the user should be redirect to:</p>
+                                <span ng-if="editModel != null" class="uConditionContentPicker" ng-class="{'add': vm.EditorModel.FalseActionNodeId == '' || vm.EditorModel.FalseActionNodeId == 0 }">
+                                    <ucondition-content-picker model="Ctrl.EditorModel.FalseActionNodeId"></ucondition-content-picker>
+                                </span>
+                            </div>-->
 
                             <div class="advancedContainer">
                                 <a href="" ng-click="showAdvanced = !showAdvanced">
@@ -72,7 +65,31 @@
                             </div>
                         </umb-box-content>
                     </umb-box-container>
+                </umb-box-content>
+            </umb-box>
 
+            <umb-box>
+                <umb-box-content>
+                    <umb-box-header title="Redirect Page"
+                                    description="Choose the page where user should be redirected if condition(s) are false">
+                    </umb-box-header>
+                    <umb-box-container>
+                        <umb-box-content>
+                            <div class="control-group umb-control-group -no-border">
+                                <div class="umb-el-wrap">
+                                    <umb-node-preview ng-show="vm.EditorModel.FalseActionNode"
+                                                      icon="vm.EditorModel.FalseActionNode.icon"
+                                                      name="vm.EditorModel.FalseActionNode.name"
+                                                      allow-remove="true"
+                                                      on-remove="vm.EditorModel.FalseActionNode = null">
+                                    </umb-node-preview>
+                                    <button type="button" ng-show="!vm.EditorModel.FalseActionNode" ng-click="vm.PickFalseActionNodeId()" class="umb-node-preview-add">
+                                        <localize key="general_add">Add</localize>
+                                    </button>
+                                </div>
+                            </div>
+                        </umb-box-content>
+                    </umb-box-container>
                 </umb-box-content>
             </umb-box>
         </umb-editor-container>
@@ -96,15 +113,11 @@
                 </umb-button>
             </umb-editor-footer-content-right>
         </umb-editor-footer>
-    </umb-editor-panel>
+    </umb-editor-view>
 </div>
 
 
-<!--<style type="text/css">
-    #dialog {
-        min-width: 680px;
-    }
-
+<style type="text/css">
     .uCondition-contentpickercontainer {
         margin: 10px;
     }
@@ -161,4 +174,4 @@
     .uCondition-advanced-buttons {
         margin-top: 10px;
     }
-</style>-->
+</style>

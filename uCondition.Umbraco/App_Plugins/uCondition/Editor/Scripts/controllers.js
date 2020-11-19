@@ -201,11 +201,9 @@ var uCondition;
                     var that = this;
 
                     $scope.submit = function () {
-                        console.log('Scope submit...');
                         if ($scope.model.submit) {
                             $scope.model.value = [];
 
-                            console.log('Scope submit...2');
                             for (var i = 0; i < that.Fields.length; i++) {
                                 for (var k = 0; k < $scope.model.dialogData.Values.length; k++) {
                                     if (that.Fields[i].PropertyEditorModel.alias == $scope.model.dialogData.Values[k].Alias) {

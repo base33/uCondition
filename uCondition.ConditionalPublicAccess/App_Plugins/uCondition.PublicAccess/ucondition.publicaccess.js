@@ -12,15 +12,16 @@ var uConditionPublicAccess;
             function PublicAccessController($scope, publicAccessService, editorService, treeService, navigationService, notificationsService, $routeParams, contentResource, mediaResource, appState) {
                 this.$scope = $scope;
                 this.PublicAccessService = publicAccessService;
-                this.DialogService = editorService;
+                this.editorService = editorService;
                 this.EditorModel = null;
                 this.$scope.editModel = null;
                 this.$scope.metaData = null;
                 this.$routeParams = $routeParams;
                 this.TreeService = treeService;
-                this.NotificationsService = notificationsService;
-                this.NavigationService = navigationService;
+                this.notificationsService = notificationsService;
+                this.navigationService = navigationService;
                 this.AppState = appState;
+                this.loading = true;
                 var that = this;
                 $scope.currentNode = null;
 
@@ -38,6 +39,8 @@ var uConditionPublicAccess;
 
                 var resource = $routeParams.section == "content" ? contentResource : mediaResource;
                 resource.getById(metaData.nodeId).then(function (data) {
+                    that.loading = false;
+
                     $scope.currentNode = data;
                     navigationService.syncTree({ tree: $routeParams.section, path: data.path, forceReload: true });
                 });
@@ -56,10 +59,30 @@ var uConditionPublicAccess;
                         }
                     };
                 });
-            }
+            };
 
             PublicAccessController.prototype.AddFalseCondition = function () {
                 this.EditorModel.Conditions.push(new Models.ProtectedPageCondition());
+            };
+
+            PublicAccessController.prototype.PickFalseActionNodeId = function () {
+                var _this = this;
+
+                _this.navigationService.allowHideDialog(false);
+
+                _this.editorService.contentPicker({
+                    multiPicker: false,
+                    submit: function (model) {
+                        _this.EditorModel.FalseActionNode = model.selection[0]
+                        _this.EditorModel.FalseActionNodeId = model.selection[0].id;
+
+                        _this.editorService.close();
+                        _this.navigationService.allowHideDialog(true);
+                    },
+                    close: function () {
+                        _this.editorService.close();
+                    }
+                });
             };
 
             PublicAccessController.prototype.Move = function (array, index, newIndex) {
@@ -76,10 +99,10 @@ var uConditionPublicAccess;
                 var _this = this;
                 if (confirm("Are you sure you wish to remove protection for this page?")) {
                     this.PublicAccessService.RemoveCondition(_this.$scope.metaData.nodeId).then(function () {
-                        _this.NotificationsService.success("Protection Removed");
-                        _this.NavigationService.allowHideDialog(true);
-                        _this.NavigationService.hideDialog();
-                        _this.NavigationService.syncTree({ tree: _this.$routeParams.section, path: _this.$scope.currentNode.path, forceReload: true });
+                        _this.notificationsService.success("Protection Removed");
+                        _this.navigationService.allowHideDialog(true);
+                        _this.navigationService.hideDialog();
+                        _this.navigationService.syncTree({ tree: _this.$routeParams.section, path: _this.$scope.currentNode.path, forceReload: true });
                     });
                 }
             };
@@ -88,17 +111,17 @@ var uConditionPublicAccess;
                 var _this = this;
                 this.PublicAccessService.SaveCondition(_this.$scope.metaData.nodeId, _this.EditorModel)
                     .then(function (response) {
-                        _this.NotificationsService.success("Protection Saved");
-                        _this.NavigationService.allowHideDialog(true);
-                        _this.NavigationService.hideDialog();
-                        _this.NavigationService.syncTree({ tree: _this.$routeParams.section, path: _this.$scope.currentNode.path, forceReload: true });
+                        _this.notificationsService.success("Protection Saved");
+                        _this.navigationService.allowHideDialog(true);
+                        _this.navigationService.hideDialog();
+                        _this.navigationService.syncTree({ tree: _this.$routeParams.section, path: _this.$scope.currentNode.path, forceReload: true });
                     });
             };
 
             PublicAccessController.prototype.Close = function () {
                 var _this = this;
-                _this.NavigationService.allowHideDialog(true);
-                _this.NavigationService.hideDialog();
+                _this.navigationService.allowHideDialog(true);
+                _this.navigationService.hideDialog();
             };
 
             return PublicAccessController;
@@ -167,7 +190,7 @@ var uConditionPublicAccess;
 //            scope: {
 //                model: '=model'
 //            },
-//            template: "<umb-editor ng-if='property' model='property'></umb-editor>",
+//            template: "<ng-form val-form-manager><umb-property-editor ng-if='property' model='property'></umb-property-editor></ng-form>",
 //            link: function (scope, element, attrs) {
 //                console.log("link scope....");
 //                console.log(scope);
