@@ -24,6 +24,9 @@ var uCondition;
                 });
             }
             uConditionController.prototype.AddSwimlane = function (conditions) {
+
+                console.log('NOW?!');
+
                 conditions.push(new uCondition.Models.Swimlane());
             };
             return uConditionController;

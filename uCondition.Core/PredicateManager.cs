@@ -79,6 +79,7 @@ namespace uCondition.Core
             var dud = BuildManager.GetReferencedAssemblies();
             var assemblies = AppDomain.CurrentDomain.GetAssemblies();
             var allTypes = assemblies.SelectMany(s => s.GetTypes());
+
             var ourTypes = allTypes.Where(p => basePredicateType.IsAssignableFrom(p) && p != basePredicateType && p != globalPredicateType);
             //|| (baseActionType.IsAssignableFrom(p) && p != baseActionType))
             var typeGroups = ourTypes.GroupBy(p => basePredicateType.IsAssignableFrom(p)); //separate into actions and predicates

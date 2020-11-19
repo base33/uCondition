@@ -1,6 +1,5 @@
 ﻿<div ng-controller="uCondition.PredicateGroup as Ctrl">
     <div class="row logicalRow description" ucondition-contenteditable contenteditable ng-model="model.Description" placeholder="Enter description">
-        
     </div>
     <div class="row logicalRow swimlane">
         <div class="toolbar" ng-show="enableSwimlaneDelete">
@@ -15,8 +14,8 @@
             </umb-confirm-action>
         </div>-->
 
-        <div ucondition-vertilize-container >
-            <div ui-sortable ng-model="model.Conditions"  style="display:inline-block;">
+        <div ucondition-vertilize-container>
+            <div ui-sortable ng-model="model.Conditions" style="display:inline-block;">
                 <div class="predicateGroups" ng-repeat="condition in model.Conditions">
                     <ucondition-condition ucondition-vertilize model="condition" container="model" is-last="$last" modal-dialog="modalDialog"></ucondition-condition>
                 </div>

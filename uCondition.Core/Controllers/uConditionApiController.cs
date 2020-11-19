@@ -57,45 +57,8 @@ namespace uCondition.Core.Controllers
             {
                 return null;
             }
-            ////var prevaluesDb = _dataTypeService.GetPreValuesCollectionByDataTypeId(datatype.Id);
 
-            var preValuesFromDb = (ValueListConfiguration)datatype.Configuration;
-            var preValues = new Dictionary<string, object>();
-
-            foreach (var item in preValuesFromDb.Items)
-            {
-                preValues.Add(item.Id.ToString(), item.Value);
-            }
-            //if (prevaluesDb.IsDictionaryBased)
-            //{
-            //    if (prevaluesDb.PreValuesAsDictionary.Count > 0 && stringIsNumber(prevaluesDb.PreValuesAsDictionary.First().Key))
-            //    {
-            //        preValues.Add("items", prevaluesDb.PreValuesAsDictionary.Select(c => new { id = c.Value.Id, value = c.Value.Value }));//.Value));
-            //    }
-            //    else
-            //    {
-            //        preValues = prevaluesDb.PreValuesAsDictionary.ToDictionary(k => k.Key, v => v.Value.Value != null && v.Value.Value.StartsWith("{") ? JsonConvert.DeserializeObject(v.Value.Value) : (object)v.Value.Value);
-            //    }
-            //}
-            //else
-            //{
-            //    prevaluesDb.PreValuesAsArray.ToList().ForEach(p => preValues.Add(propertyType.PreValueEditor.Fields[p.SortOrder].Key, p.Value));
-            //}
-
-
-            ////TODO: needed?
-            //foreach (var p in propertyType.PreValueEditor.Fields.Where(c => c.View == "hidden"))
-            //{
-            //    preValues.Add(p.Key, "1");
-            //}
-
-            //if (propertyType.DefaultPreValues != null)
-            //{
-            //    foreach (var defaultPreValue in propertyType.DefaultPreValues.Where(c => !preValues.ContainsKey(c.Key)))
-            //    {
-            //        preValues.Add(defaultPreValue.Key, defaultPreValue.Value);
-            //    }
-            //}
+            var preValues = propertyType.GetConfigurationEditor().ToValueEditor(datatype.Configuration);
 
             return new { view = propertyType.GetValueEditor().View, prevalues = preValues };
         }

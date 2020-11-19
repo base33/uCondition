@@ -1,4 +1,4 @@
-﻿<div class="umb-dialog" ng-controller="uCondition.PublicAccess as vm">
+﻿<div ng-controller="uCondition.PublicAccess as vm">
     <umb-editor-panel>
         <!--<umb-editor-header name="Configure access to"
                            name-locked="true"
@@ -9,79 +9,88 @@
 
         <umb-editor-container>
             <umb-box>
-                <umb-box-header title="Detected changes"
-                                description="Description...">
-                </umb-box-header>
-                <umb-box-container>
-                    <umb-box-content>
-                        <div class="abstract">
-                            <h5>Conditional page protection</h5>
-                        </div>
-                        <div ng-if="vm.EditorModel != null">
-                            <ucondition-editor value="vm.EditorModel.Condition"></ucondition-editor>
-                        </div>
+                <umb-box-content>
 
-                        <div class="uCondition-contentpickercontainer">
-                            <p>
-                                If false, the user should be redirect to:
-                                <span ng-if="editModel != null" class="uConditionContentPicker" ng-class="{'add': vm.EditorModel.FalseActionNodeId == '' || vm.EditorModel.FalseActionNodeId == 0 }">
-                                    <ucondition-content-picker model="Ctrl.EditorModel.FalseActionNodeId"></ucondition-content-picker>
-                                </span>
-                            </p>
-                        </div>
+                    <umb-box-header title="Detected changes"
+                                    description="Description...">
+                    </umb-box-header>
+                    <umb-box-container>
+                        <umb-box-content>
+                            <div class="abstract">
+                                <h5>Conditional page protection</h5>
+                            </div>
+                            <div ng-if="vm.EditorModel != null">
+                                <ucondition-editor value="vm.EditorModel.Condition"></ucondition-editor>
+                            </div>
 
-                        <div class="advancedContainer">
-                            <a href="" ng-click="showAdvanced = !showAdvanced">
-                                {{!showAdvanced ? 'Show' : 'Hide'}} advanced actions
-                                ({{vm.EditorModel.Conditions.length}} configured)
-                            </a>
-                            <div ng-show="showAdvanced">
-                                <h5>Advanced actions</h5>
-                                <div>
-                                    You can add logic here to help decide which error the user should be shown.
-                                    The action will override the action above if the condition is true.
-                                </div>
+                            <div class="uCondition-contentpickercontainer">
+                                <p>
+                                    If false, the user should be redirect to:
+                                    <span ng-if="editModel != null" class="uConditionContentPicker" ng-class="{'add': vm.EditorModel.FalseActionNodeId == '' || vm.EditorModel.FalseActionNodeId == 0 }">
+                                        <ucondition-content-picker model="Ctrl.EditorModel.FalseActionNodeId"></ucondition-content-picker>
+                                    </span>
+                                </p>
+                            </div>
 
-                                <div class="advancedCondition" ng-repeat="subAction in vm.EditorModel.Conditions">
-                                    <h6>
-                                        <a ng-click="vm.Move(vm.EditorModel.Conditions, $index, $index-1)" title="move up"><i class="icon icon-navigation-up"></i></a>
-                                        <a ng-click="vm.Move(vm.EditorModel.Conditions, $index, $index+1)" title="move down"><i class="icon icon-navigation-down"></i></a>
-                                        Conditional Action {{$index + 1}}
-                                        <a ng-click="vm.EditorModel.Conditions.splice($index, 1)" class="removeButton"><i class="icon icon-delete red"></i> remove</a>
-                                    </h6>
+                            <div class="advancedContainer">
+                                <a href="" ng-click="showAdvanced = !showAdvanced">
+                                    {{!showAdvanced ? 'Show' : 'Hide'}} advanced actions
+                                    ({{vm.EditorModel.Conditions.length}} configured)
+                                </a>
+                                <div ng-show="showAdvanced">
+                                    <h5>Advanced actions</h5>
                                     <div>
-                                        <ucondition-editor value="subAction.Condition"></ucondition-editor>
+                                        You can add logic here to help decide which error the user should be shown.
+                                        The action will override the action above if the condition is true.
                                     </div>
 
-                                    <div class="uCondition-contentpickercontainer">
-                                        <p>
-                                            If this condition is true, what page should the user be redirected to?
-                                            <span ng-if="editModel != null" class="uConditionContentPicker" ng-class="{'add': subAction.FalseActionNodeId == '' || vm.EditorModel.FalseActionNodeId == 0 }">
-                                                <ucondition-content-picker model="subAction.FalseActionNodeId"></ucondition-content-picker>
-                                            </span>
-                                        </p>
-                                    </div>
+                                    <div class="advancedCondition" ng-repeat="subAction in vm.EditorModel.Conditions">
+                                        <h6>
+                                            <a ng-click="vm.Move(vm.EditorModel.Conditions, $index, $index-1)" title="move up"><i class="icon icon-navigation-up"></i></a>
+                                            <a ng-click="vm.Move(vm.EditorModel.Conditions, $index, $index+1)" title="move down"><i class="icon icon-navigation-down"></i></a>
+                                            Conditional Action {{$index + 1}}
+                                            <a ng-click="vm.EditorModel.Conditions.splice($index, 1)" class="removeButton"><i class="icon icon-delete red"></i> remove</a>
+                                        </h6>
+                                        <div>
+                                            <ucondition-editor value="subAction.Condition"></ucondition-editor>
+                                        </div>
 
-                                </div>
-                                <div class="uCondition-advanced-buttons">
-                                    <button class="btn btn-primary" ng-click="vm.AddFalseCondition()">Add Action Condition</button>
+                                        <div class="uCondition-contentpickercontainer">
+                                            <p>
+                                                If this condition is true, what page should the user be redirected to?
+                                                <span ng-if="editModel != null" class="uConditionContentPicker" ng-class="{'add': subAction.FalseActionNodeId == '' || vm.EditorModel.FalseActionNodeId == 0 }">
+                                                    <ucondition-content-picker model="subAction.FalseActionNodeId"></ucondition-content-picker>
+                                                </span>
+                                            </p>
+                                        </div>
+
+                                    </div>
+                                    <div class="uCondition-advanced-buttons">
+                                        <button class="btn btn-primary" ng-click="vm.AddFalseCondition()">Add Action Condition</button>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </umb-box-content>
-                </umb-box-container>
+                        </umb-box-content>
+                    </umb-box-container>
+
+                </umb-box-content>
             </umb-box>
         </umb-editor-container>
 
         <umb-editor-footer>
             <umb-editor-footer-content-right>
                 <umb-button type="button"
-                            button-style="danger"
+                            button-style="link"
+                            label-key="general_close"
+                            action="vm.Close()">
+                </umb-button>
+                <umb-button type="button"
+                            button-style="success"
                             label-key="general_remove"
                             action="vm.RemoveProtection()">
                 </umb-button>
                 <umb-button type="button"
-                            button-style="primary"
+                            button-style="danger"
                             label-key="buttons_save"
                             action="vm.SaveChanges()">
                 </umb-button>

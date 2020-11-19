@@ -1,0 +1,60 @@
+﻿<div ng-controller="uCondition.Editors.GenericEditor as vm">
+    <umb-editor-view>
+        <umb-editor-header name="model.title"
+                           name-locked="true"
+                           hide-alias="true"
+                           hide-icon="true"
+                           hide-description="true">
+        </umb-editor-header>
+
+        <umb-editor-container>
+            <umb-box>
+                <umb-box-content>
+                    <div class="control-group umb-control-group">
+                        <ng-form>
+                            <div class="umb-el-wrap">
+                                <label class="control-label">Negate condition?</label>
+                                <div class="controls">
+                                    <div class="umb-property-editor umb-boolean">
+                                        <input type="checkbox" ng-model="model.dialogData.Invert" />
+                                    </div>
+                                </div>
+                            </div>
+                        </ng-form>
+                    </div>
+                </umb-box-content>
+            </umb-box>
+
+            <umb-box>
+                <umb-box-content>
+                    <div class="control-group umb-control-group" ng-repeat="field in vm.Fields | orderBy:'+SortOrder'">
+                        <ng-form>
+                            <div class="umb-el-wrap">
+                                <label class="control-label">{{field.Name}}</label>
+                                <div class="controls">
+                                    <umb-property-editor model="field.PropertyEditorModel"></umb-property-editor>
+                                </div>
+                            </div>
+                        </ng-form>
+                    </div>
+                </umb-box-content>
+            </umb-box>
+        </umb-editor-container>
+
+        <umb-editor-footer>
+            <umb-editor-footer-content-right>
+                <umb-button type="button"
+                            button-style="link"
+                            label-key="general_cancel"
+                            shortcut="esc"
+                            action="close()">
+                </umb-button>
+                <umb-button type="button"
+                            button-style="action"
+                            label="Accept changes"
+                            action="submit(model)">
+                </umb-button>
+            </umb-editor-footer-content-right>
+        </umb-editor-footer>
+    </umb-editor-view>
+</div>

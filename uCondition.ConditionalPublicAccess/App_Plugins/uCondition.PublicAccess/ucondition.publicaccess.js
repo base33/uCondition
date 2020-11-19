@@ -15,6 +15,7 @@ var uConditionPublicAccess;
                 this.DialogService = editorService;
                 this.EditorModel = null;
                 this.$scope.editModel = null;
+                this.$scope.metaData = null;
                 this.$routeParams = $routeParams;
                 this.TreeService = treeService;
                 this.NotificationsService = notificationsService;
@@ -33,6 +34,8 @@ var uConditionPublicAccess;
                     }
                 }).metaData;
 
+                $scope.metaData = metaData;
+
                 var resource = $routeParams.section == "content" ? contentResource : mediaResource;
                 resource.getById(metaData.nodeId).then(function (data) {
                     $scope.currentNode = data;
@@ -40,8 +43,6 @@ var uConditionPublicAccess;
                 });
 
                 this.PublicAccessService.GetCondition(metaData.nodeId).then(function (response) {
-                    console.log(response.data);
-
                     that.EditorModel = response.data == null
                         ? new Models.ProtectedPageModel()
                         : response.data;
@@ -74,8 +75,10 @@ var uConditionPublicAccess;
             PublicAccessController.prototype.RemoveProtection = function () {
                 var _this = this;
                 if (confirm("Are you sure you wish to remove protection for this page?")) {
-                    this.PublicAccessService.RemoveCondition(this.$routeParams.id).then(function () {
+                    this.PublicAccessService.RemoveCondition(_this.$scope.metaData.nodeId).then(function () {
                         _this.NotificationsService.success("Protection Removed");
+                        _this.NavigationService.allowHideDialog(true);
+                        _this.NavigationService.hideDialog();
                         _this.NavigationService.syncTree({ tree: _this.$routeParams.section, path: _this.$scope.currentNode.path, forceReload: true });
                     });
                 }
@@ -83,11 +86,19 @@ var uConditionPublicAccess;
 
             PublicAccessController.prototype.SaveChanges = function () {
                 var _this = this;
-                this.PublicAccessService.SaveCondition(this.$routeParams.id, this.EditorModel)
+                this.PublicAccessService.SaveCondition(_this.$scope.metaData.nodeId, _this.EditorModel)
                     .then(function (response) {
                         _this.NotificationsService.success("Protection Saved");
+                        _this.NavigationService.allowHideDialog(true);
+                        _this.NavigationService.hideDialog();
                         _this.NavigationService.syncTree({ tree: _this.$routeParams.section, path: _this.$scope.currentNode.path, forceReload: true });
                     });
+            };
+
+            PublicAccessController.prototype.Close = function () {
+                var _this = this;
+                _this.NavigationService.allowHideDialog(true);
+                _this.NavigationService.hideDialog();
             };
 
             return PublicAccessController;
@@ -195,9 +206,8 @@ angular.module("umbraco.directives").directive("uconditionEditor", [function uCo
         scope: {
             value: '='
         },
-        template: "<umb-editor ng-if='value' model='editModel'></umb-editor>",
+        template: "<ng-form val-form-manager><umb-property-editor ng-if='value' model='editModel'></umb-property-editor></ng-form>",
         link: function (scope, element, attrs) {
-            console.log(scope.value);
             scope.editModel = {
                 view: "/app_plugins/ucondition/editor/ucondition.html",
                 alias: "test",
@@ -207,7 +217,6 @@ angular.module("umbraco.directives").directive("uconditionEditor", [function uCo
                     EnableAlternativeConditions: false
                 }
             };
-            console.log(scope.value);
             setTimeout(function () {
                 scope.$watch(function () { return scope.value; }, function () { return scope.editModel.value = scope.value; });
             }, 200);

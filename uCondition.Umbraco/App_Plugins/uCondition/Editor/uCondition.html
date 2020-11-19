@@ -1,5 +1,4 @@
-﻿
-<div ng-controller="uCondition as Ctrl" class="row uConditionContainer">
+﻿<div ng-controller="uCondition as Ctrl" class="row uConditionContainer">
 
     <div ng-repeat="predicateGroup in Ctrl.Model.PredicateGroups">
         <ucondition-swimlane model="predicateGroup" container="Ctrl.Model" is-last="$last" modal-dialog="Ctrl.ModalDialog" enable-swimlane-delete="Ctrl.Config.EnableAlternativeConditions"></ucondition-swimlane>
@@ -9,11 +8,11 @@
         <a href=""><span style="color:white;background:green;padding: 3px 5px;border-radius: 15px;"><i class="icon-add"></i></span> {{Ctrl.Model.PredicateGroups.length > 0 ? "Add Alternative Condition" : "Add Condition"}}</a>
     </div>
 
-    <umb-overlay ng-if="Ctrl.ModalDialog.show"
+    <!--<umb-overlay ng-if="Ctrl.ModalDialog.show"
                  model="Ctrl.ModalDialog"
                  view="Ctrl.ModalDialog.view"
                  position="right">
-    </umb-overlay>
+    </umb-overlay>-->
 
 </div>
 
@@ -258,7 +257,6 @@
                     background: #2e8aea;
                     border-color: #6797c7;
                     padding: 5px 2px 0px;
-                    
                     transition: ease-in-out 0.2s;
                 }
 
@@ -316,7 +314,7 @@
     }
 
     .predicateGroup.predicate:hover {
-        background:transparent;
+        background: transparent;
         transition: ease-in-out 0.2s;
     }
 </style>
