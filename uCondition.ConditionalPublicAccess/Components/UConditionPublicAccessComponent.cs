@@ -78,8 +78,7 @@ namespace uCondition.ConditionalPublicAccess.Composers
                 {
                     node.CssClasses.Add("uConditionAccess");
                 }
-                else if (protectedPages.Pages.Any(
-                    c => itemPath.IndexOf(c.Id.ToString()) >= 0))
+                else if (protectedPages.Pages.Any(c => itemPath.IndexOf(c.Id.ToString()) >= 0))
                 {
                     node.CssClasses.Add("uConditionAccess");
                     node.CssClasses.Add("inheritedAccess");

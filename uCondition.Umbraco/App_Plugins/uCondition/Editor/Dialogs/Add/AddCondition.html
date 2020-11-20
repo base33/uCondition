@@ -30,7 +30,7 @@
                             <ul>
                                 <li ng-show="option.Show" ng-repeat="option in group.Conditions" ng-class="{ 'selected' : option.Selected }" ng-click="option.Selected = !option.Selected">
                                     <div>
-                                        <i ng-show="option.Condition.Type == 'Predicate'" class="{{ option.Condition.Config.Icon }}"></i>
+                                        <i ng-show="option.Condition.Type == 'Predicate'" class="{{option.Condition.Config.Icon}}"></i>
                                         <i ng-show="option.Condition.Type == 'PredicateGroup'" class="icon-brackets"></i>
                                     </div>
                                     <div>{{option.Condition.Type == "Predicate" ? option.Condition.Config.Name : "Subcondition"}}</div>
@@ -60,55 +60,3 @@
         </umb-editor-footer>
     </umb-editor-view>
 </div>
-
-<style type="text/css">
-    .uCondition_AddCondition > .form-horizontal > .umb-el-wrap > .control-label {
-        display: inline-block;
-        float: left;
-        width: 160px !important;
-    }
-
-    .uCondition_AddCondition > .form-horizontal > .umb-el-wrap {
-        margin-bottom: 5px;
-    }
-
-    .group .group-title {
-        border-bottom: 1px solid #d4d4d4;
-        font-size: 14pt;
-        padding-bottom: 5px;
-        padding-top: 10px;
-    }
-
-    .group .group-options ul {
-        list-style: none;
-        margin: 0;
-    }
-
-        .group .group-options ul li {
-            padding: 5px;
-            background: #f8f8f8;
-            border-bottom: 1px solid #d4d4d4;
-            cursor: pointer;
-            transition: ease-in-out 0.2s;
-        }
-
-            .group .group-options ul li.selected {
-                background: #e6ffe6;
-            }
-
-                .group .group-options ul li.selected:hover {
-                    background: #e0fae0;
-                }
-
-            .group .group-options ul li > div {
-                display: inline-block;
-            }
-
-            .group .group-options ul li:hover {
-                background: #fbfbfb;
-            }
-
-            .group .group-options ul li:last-child {
-                border-color: #d4d4d4;
-            }
-</style>

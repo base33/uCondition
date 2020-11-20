@@ -28,6 +28,9 @@
       }
     }
   ],
+  "css": [
+    "~/App_Plugins/uCondition/editor/css/styles.css"
+  ],
   "javascript": [
     "~/App_Plugins/uCondition/editor/scripts/models.js",
     "~/App_Plugins/uCondition/editor/scripts/services.js",

@@ -308,6 +308,8 @@
     <Content Include="App_Plugins\StarterKit\tours\views\medialibrary\uploadimages.html" />
     <Content Include="App_Plugins\StarterKit\tours\views\validatetext.controller.js" />
     <Content Include="App_Plugins\StarterKit\tours\views\validatetext.html" />
+    <Content Include="App_Plugins\uCondition.PublicAccess\ucondition.publicaccess.css" />
+    <Content Include="App_Plugins\uCondition.PublicAccess\ucondition.publicaccess.js" />
     <Content Include="App_Plugins\uCondition\ControlPanels\GlobalConditions\globalconditions.editor.html" />
     <Content Include="App_Plugins\uCondition\ControlPanels\GlobalConditions\globalconditions.html" />
     <Content Include="App_Plugins\uCondition\ControlPanels\GlobalConditions\Scripts\app.js" />
@@ -315,6 +317,7 @@
     <Content Include="App_Plugins\uCondition\ControlPanels\GlobalConditions\Scripts\directives.js" />
     <Content Include="App_Plugins\uCondition\ControlPanels\GlobalConditions\Scripts\models.js" />
     <Content Include="App_Plugins\uCondition\ControlPanels\GlobalConditions\Scripts\services.js" />
+    <Content Include="App_Plugins\uCondition\Editor\Css\styles.css" />
     <Content Include="App_Plugins\uCondition\Editor\Dialogs\Add\AddAction.html" />
     <Content Include="App_Plugins\uCondition\Editor\Dialogs\Add\AddCondition.html" />
     <Content Include="App_Plugins\uCondition\Editor\Dialogs\Edit\EditCondition.html" />
@@ -410,6 +413,8 @@
     <Content Include="App_Plugins\uCondition\Editor\Scripts\models.js.map" />
     <Content Include="App_Plugins\uCondition\Editor\Scripts\services.js.map" />
     <Content Include="App_Plugins\uCondition\package.manifest" />
+    <Content Include="App_Plugins\uCondition.PublicAccess\package.manifest" />
+    <Content Include="App_Plugins\uCondition.PublicAccess\ucondition.publicaccess.js.map" />
     <None Include="packages.config" />
     <Content Include="Views\Web.config" />
     <Content Include="Views\Partials\Grid\Editors\Textstring.cshtml" />

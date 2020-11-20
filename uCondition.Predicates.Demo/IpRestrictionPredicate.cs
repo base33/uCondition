@@ -15,7 +15,7 @@ namespace uCondition.Predicates.Members
             Name = "Is request from a set of allowed IP ranges?";
             Alias = "uCondition.IPRestriction";
             Icon = "icon-ethernet";
-            Category = "Canada Life Security";
+            Category = "Security";
             Fields = new List<EditableProperty>
             {
                 new EditableProperty("IP Ranges Allowed", "allowedIpRanges", "Textarea")
