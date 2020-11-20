@@ -37,18 +37,19 @@ namespace uCondition.ConditionalPublicAccess
                 var protectedPage = protectedPages.Pages.FirstOrDefault(p => p.Id == id);
 
                 protectedPage.Conditions = protectedPageConditionList;
-                protectedPage.Condition = scriptSerializer.Serialize((object)model.Condition);
+                protectedPage.Condition = scriptSerializer.Serialize(model.Condition);
                 protectedPage.FalseActionNodeId = model.FalseActionNodeId;
             }
             else
             {
                 var pages = protectedPages.Pages;
-                var protectedPage = new ProtectedPage();
-
-                protectedPage.Id = id;
-                protectedPage.Condition = scriptSerializer.Serialize(model.Condition);
-                protectedPage.FalseActionNodeId = model.FalseActionNodeId;
-                protectedPage.Conditions = protectedPageConditionList;
+                var protectedPage = new ProtectedPage
+                {
+                    Id = id,
+                    Condition = scriptSerializer.Serialize(model.Condition),
+                    FalseActionNodeId = model.FalseActionNodeId,
+                    Conditions = protectedPageConditionList
+                };
                 pages.Add(protectedPage);
             }
 
