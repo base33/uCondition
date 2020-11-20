@@ -77,7 +77,6 @@ var uConditionPublicAccess;
                                 }
                             });
                     });
-
             };
 
             PublicAccessController.prototype.AddFalseCondition = function () {
@@ -116,7 +115,7 @@ var uConditionPublicAccess;
                 if (confirm("Are you sure you wish to remove protection for this page?")) {
                     this.publicAccessService.RemoveCondition(_this.$scope.metaData.nodeId)
                         .then(() => {
-                            _this.notificationsService.success("Protection Removed");
+                            _this.notificationsService.success("Protection removed");
                             _this.navigationService.allowHideDialog(true);
                             _this.navigationService.hideDialog();
                             _this.navigationService.syncTree({ tree: _this.$routeParams.section, path: _this.$scope.currentNode.path, forceReload: true });
@@ -128,7 +127,7 @@ var uConditionPublicAccess;
                 var _this = this;
                 this.publicAccessService.SaveCondition(_this.$scope.metaData.nodeId, _this.EditorModel)
                     .then(() => {
-                        _this.notificationsService.success("Protection Saved");
+                        _this.notificationsService.success("Protection saved");
                         _this.navigationService.allowHideDialog(true);
                         _this.navigationService.hideDialog();
                         _this.navigationService.syncTree({ tree: _this.$routeParams.section, path: _this.$scope.currentNode.path, forceReload: true });
@@ -199,46 +198,6 @@ var uConditionPublicAccess;
     })(Services = uConditionPublicAccess.Services || (uConditionPublicAccess.Services = {}));
 })(uConditionPublicAccess || (uConditionPublicAccess = {}));
 
-//angular.module("umbraco.directives")
-//    .directive("uconditionContentPicker", function uConditionContentPicker() {
-//        return {
-//            restrict: 'E',
-//            replace: false,
-//            scope: {
-//                model: '=model'
-//            },
-//            template: "<ng-form val-form-manager><umb-property-editor ng-if='property' model='property'></umb-property-editor></ng-form>",
-//            link: function (scope, element, attrs) {
-//                console.log("link scope....");
-//                console.log(scope);
-//                scope.property = {
-//                    view: 'contentpicker',
-//                    alias: 'contentpicker',
-//                    config: {
-//                        minNumber: 0,
-//                        maxNumber: 1
-//                    },
-//                    value: scope.model.toString()
-//                };
-
-//                setTimeout(function () {
-//                    scope.$watch(function () {
-//                        return scope.model;
-//                    }, function () {
-//                        return scope.property.value = scope.model.toString();
-//                    });
-//                }, 200);
-
-//                setTimeout(function () {
-//                    scope.$watch(function () {
-//                        return scope.property.value;
-//                    }, function () {
-//                        return scope.model = scope.property.value != "" ? parseInt(scope.property.value) : 0;
-//                    });
-//                }, 200);
-//            }
-//        };
-//    });
 angular.module("umbraco.directives").directive("uconditionEditor", [function uConditionEditor($scope) {
     return {
         restrict: 'E',

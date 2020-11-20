@@ -262,8 +262,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Composers\UConditionPublicAccessComposer.cs" />
     <Compile Include="ConditionalAccessModule.cs" />
-    <Compile Include="EventHandlers\UConditionPublicAccessComponent.cs" />
+    <Compile Include="Components\UConditionPublicAccessComponent.cs" />
     <Compile Include="uConditionPublicAccessApiController.cs" />
     <Compile Include="Helpers\ConditionalAccess.cs" />
     <Compile Include="Data\ProtectedPage.cs" />
@@ -304,7 +305,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="App_Plugins\uCondition.PublicAccess\PublicAccess.html" />
     <Content Include="App_Plugins\uCondition.PublicAccess\ucondition.publicaccess.css" />
     <Content Include="App_Plugins\uCondition.PublicAccess\ucondition.publicaccess.js" />
     <Content Include="Umbraco\Views\content\uConditionAccess.html" />

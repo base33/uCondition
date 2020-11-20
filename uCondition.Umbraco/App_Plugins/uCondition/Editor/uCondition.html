@@ -1,19 +1,11 @@
-﻿<div ng-controller="uCondition as Ctrl" class="row uConditionContainer">
-
-    <div ng-repeat="predicateGroup in Ctrl.Model.PredicateGroups">
+﻿<div ng-controller="uCondition as vm" class="row uConditionContainer">
+    <div ng-repeat="predicateGroup in vm.Model.PredicateGroups">
         <ucondition-swimlane model="predicateGroup" container="Ctrl.Model" is-last="$last" modal-dialog="Ctrl.ModalDialog" enable-swimlane-delete="Ctrl.Config.EnableAlternativeConditions"></ucondition-swimlane>
     </div>
 
-    <div ng-show="Ctrl.Config.EnableAlternativeConditions" ng-click="Ctrl.AddSwimlane(Ctrl.Model.PredicateGroups)" class="row logicalRow and-or">
-        <a href=""><span style="color:white;background:green;padding: 3px 5px;border-radius: 15px;"><i class="icon-add"></i></span> {{Ctrl.Model.PredicateGroups.length > 0 ? "Add Alternative Condition" : "Add Condition"}}</a>
+    <div ng-show="vm.Config.EnableAlternativeConditions" ng-click="vm.AddSwimlane(Ctrl.Model.PredicateGroups)" class="row logicalRow and-or">
+        <span style="color:white;background:green;padding: 3px 5px;border-radius: 15px;"><i class="icon-add"></i></span> {{vm.Model.PredicateGroups.length > 0 ? "Add Alternative Condition" : "Add Condition"}}
     </div>
-
-    <!--<umb-overlay ng-if="Ctrl.ModalDialog.show"
-                 model="Ctrl.ModalDialog"
-                 view="Ctrl.ModalDialog.view"
-                 position="right">
-    </umb-overlay>-->
-
 </div>
 
 

@@ -1,36 +1,26 @@
-﻿<div ng-controller="uCondition.PredicateGroup as Ctrl">
+﻿<div ng-controller="uCondition.PredicateGroup as vm">
     <div class="row logicalRow description" ucondition-contenteditable contenteditable ng-model="model.Description" placeholder="Enter description">
     </div>
     <div class="row logicalRow swimlane">
         <div class="toolbar" ng-show="enableSwimlaneDelete">
-            <i ng-click="Ctrl.RemoveSwimlane(container, model)" class="icon-trash"></i>
-            <!--<i ng-click="conditionList.UIViewState.EnableDeletePrompt = true" class="icon-trash"></i>-->
+            <i ng-click="vm.RemoveSwimlane(container, model)" class="icon-trash"></i>
         </div>
-        <!--<div class="dialogs">
-            <umb-confirm-action ng-if="conditionList.UIViewState.EnableDeletePrompt"
-                                direction="left"
-                                on-confirm="Ctrl.RemoveConditionList($index)"
-                                on-cancel="Ctrl.CancelRemoveConditionList(conditionList)">
-            </umb-confirm-action>
-        </div>-->
 
         <div ucondition-vertilize-container>
             <div ui-sortable ng-model="model.Conditions" style="display:inline-block;">
                 <div class="predicateGroups" ng-repeat="condition in model.Conditions">
-                    <ucondition-condition ucondition-vertilize model="condition" container="model" is-last="$last" modal-dialog="modalDialog"></ucondition-condition>
+                    <ucondition-condition ucondition-vertilize model="condition" container="model" is-last="$last"></ucondition-condition>
                 </div>
 
                 <div ucondition-vertilize style="display:inline-block;">
                     <div class="condition add">
-                        <div ng-click="Ctrl.AddPredicate(model.Conditions)">
+                        <div ng-click="vm.AddPredicate(model.Conditions)">
                             <i class="icon-add"></i>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-
-
     </div>
 
     <!--<div ng-show="actionsEnabled" class="row logicalRow swimlane">

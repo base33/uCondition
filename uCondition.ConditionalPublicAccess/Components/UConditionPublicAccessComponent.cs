@@ -1,18 +1,12 @@
 ﻿using System.Linq;
 using uCondition.ConditionalPublicAccess.Data;
-using Umbraco.Core;
 using Umbraco.Core.Composing;
 using Umbraco.Core.Services;
 using Umbraco.Web.Models.Trees;
 using Umbraco.Web.Trees;
 
-namespace uCondition.ConditionalPublicAccess.EventHandlers
+namespace uCondition.ConditionalPublicAccess.Composers
 {
-    [RuntimeLevel(MinLevel = RuntimeLevel.Run)]
-    public class UConditionPublicAccessComposer : ComponentComposer<UConditionPublicAccessComponent>, IUserComposer
-    {
-    }
-
     public class UConditionPublicAccessComponent : IComponent
     {
         private readonly IMediaService _mediaService;
@@ -43,16 +37,13 @@ namespace uCondition.ConditionalPublicAccess.EventHandlers
                 return;
             }
 
-            var menuItem = new MenuItem("uConditionAccess", "Conditional Access")
+            var menuItem = new MenuItem("uConditionAccess", "Conditional access")
             {
                 Icon = "code",
                 OpensDialog = true
             };
 
             menuItem.AdditionalData.Add("nodeId", e.NodeId);
-            //menuItem.AdditionalData.Add(
-            //    "actionRoute",
-            //    $"/{sender.TreeAlias}/{sender.TreeAlias}/uconditionaccess/{e.NodeId}");
 
             var protectMenuItemIndex = e.Menu.Items.FindIndex(x => x.Alias == "protect");
             e.Menu.Items.Insert(protectMenuItemIndex + 1, menuItem);

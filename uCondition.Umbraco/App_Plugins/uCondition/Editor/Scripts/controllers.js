@@ -15,7 +15,6 @@ var uCondition;
                     //    predicateSyncService.SyncActions($scope.model.value.PredicateGroups[i].Actions);
                     //}
                     this.Model = this.$scope.model.value;
-                    this.ModalDialog = new uCondition.Editor.Models.ModalDialog();
                     var defaultConfig = new uCondition.Editor.Models.DataTypeConfig();
                     this.Config = $scope.model.config;
                     this.Config = angular.extend({}, defaultConfig, this.Config);
@@ -38,7 +37,6 @@ var uCondition;
                     this.$timeout = $timeout;
                     this.dialogService = editorService;
                     this.navigationService = navigationService;
-                    this.ModalDialog = $scope.modalDialog;
                 }
 
                 PredicateGroupController.prototype.GetConditionFieldSummary = function (condition) {
@@ -59,9 +57,8 @@ var uCondition;
 
                     _this.navigationService.allowHideDialog(false);
 
-                    var modalDialog = {
-                        title: "Add Predicate",
-                        subtitle: "Choose the predicate you would like to add",
+                    var addPredicateModalDialog = {
+                        title: "Add condition",
                         view: "/App_Plugins/uCondition/editor/dialogs/add/addcondition.html",
                         size: "medium",
                         submit: function (model) {
@@ -77,22 +74,7 @@ var uCondition;
                         }
                     };
 
-                    _this.dialogService.open(modalDialog);
-
-                    //this.ModalDialog.title = "Add Predicate";
-                    //this.ModalDialog.subtitle = "Choose the predicate you would like to add";
-                    //this.ModalDialog.view = "/App_Plugins/uCondition/editor/dialogs/add/addcondition.html";
-                    //this.ModalDialog.show = true;
-                    //this.ModalDialog.submitButtonLabel = "Add Condition";
-                    //this.ModalDialog.closeButtonLabel = "Cancel";
-                    //this.ModalDialog.value = {};
-                    //this.ModalDialog.submit = function (model) {
-                    //    for (var i = 0; i < model.value.length; i++) {
-                    //        conditions.push(model.value[i]);
-                    //    }
-                    //    _this.ModalDialog.show = false;
-                    //    _this.EditManyConditions(model.value);
-                    //};
+                    _this.dialogService.open(addPredicateModalDialog);
                 };
 
                 PredicateGroupController.prototype.EditPredicate = function (condition, callback) {
@@ -101,15 +83,17 @@ var uCondition;
 
                     _this.navigationService.allowHideDialog(false);
 
-                    var modalDialog = {
-                        title: "Edit Predicate",
-                        subtitle: condition.Config.Name,
+                    var editPredicateModalDialog = {
+                        title: "Edit condition",
                         view: "/App_Plugins/uCondition/editor/dialogs/edit/editcondition.html",
                         size: "medium",
                         dialogData: condition,
                         submit: function (model) {
-                            console.log('Submit z modala');
                             condition.NeedsConfiguring = false;
+
+                            for (var i = 0; i < model.value.length; i++) {
+                                conditions.push(model.value[i]);
+                            }
 
                             _this.dialogService.close();
                             _this.navigationService.allowHideDialog(true);
@@ -118,35 +102,14 @@ var uCondition;
                                 callback();
                         },
                         close: function () {
-                            console.log('Close z modala...');
                             _this.dialogService.close();
                         }
                     };
 
-                    _this.dialogService.open(modalDialog);
-
-
-                    //this.ModalDialog.title = "Edit Predicate";
-                    //this.ModalDialog.subtitle = condition.Config.Name;
-                    //this.ModalDialog.view = "/app_plugins/ucondition/editor/dialogs/edit/ucondition.editcondition.html";
-                    //this.ModalDialog.dialogData = condition;
-                    //this.ModalDialog.submitButtonLabel = "Accept Changes";
-                    //this.ModalDialog.closeButtonLabel = "Cancel";
-                    //this.ModalDialog.value = {};
-                    //this.ModalDialog.submit = function (model) {
-                    //    _this.ModalDialog.show = false;
-                    //    condition.NeedsConfiguring = false;
-                    //    if (callback != null)
-                    //        callback();
-                    //};
-                    //this.ModalDialog.show = true;
+                    _this.dialogService.open(editPredicateModalDialog);
                 };
-                /**
-                 * loop through and show edit dialog for each condition that needs configuring
-                 * @param conditions conditions to edit
-                 */
+
                 PredicateGroupController.prototype.EditManyConditions = function (conditions) {
-                    //shallow clone the array to make sure it doesn't change while running through it
                     var conditionsToProcess = conditions.splice(0);
                     var index = 0;
                     var that = this;
@@ -165,6 +128,7 @@ var uCondition;
                         }, 200);
                     }
                 };
+
                 PredicateGroupController.prototype.RemoveCondition = function (container, conditionToRemove) {
                     var index = -1;
                     for (var i = 0; i < container.Conditions.length; i++) {
@@ -176,6 +140,7 @@ var uCondition;
                     if (index != -1)
                         container.Conditions.splice(index, 1);
                 };
+
                 PredicateGroupController.prototype.RemoveSwimlane = function (container, predicateToRemove) {
                     if (!confirm("Are you sure you want to delete this expression?"))
                         return;
@@ -353,7 +318,7 @@ var uCondition;
 
                     uConditionApiService.GetPredicates()
                         .then(predicateConfigs => predicateConfigs.data)
-                        .then(function (predicateConfigs) {
+                        .then(predicateConfigs => {
                             var groups = {};
                             groups["Special"] = [new uCondition.Editor.Models.PredicateGroup()];
 
@@ -505,3 +470,4 @@ var uCondition;
         })(Controllers = Editor.Controllers || (Editor.Controllers = {}));
     })(Editor = uCondition.Editor || (uCondition.Editor = {}));
 })(uCondition || (uCondition = {}));
+//# sourceMappingURL=controllers.js.map

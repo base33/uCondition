@@ -326,8 +326,6 @@
     <Content Include="App_Plugins\uCondition\Editor\uCondition.html" />
     <Content Include="App_Plugins\uCondition\Editor\uCondition.predicategroup.html" />
     <Content Include="App_Plugins\uCondition\Editor\uCondition.swimlane.html" />
-    <Content Include="App_Plugins\uCondition\uCondition.controllers.js" />
-    <Content Include="App_Plugins\uCondition\uCondition.models.js" />
     <Content Include="config\grid.editors.config.js" />
     <Content Include="config\Lang\cs-CZ.user.xml" />
     <Content Include="config\Lang\da-DK.user.xml" />
@@ -412,8 +410,6 @@
     <Content Include="App_Plugins\uCondition\Editor\Scripts\models.js.map" />
     <Content Include="App_Plugins\uCondition\Editor\Scripts\services.js.map" />
     <Content Include="App_Plugins\uCondition\package.manifest" />
-    <Content Include="App_Plugins\uCondition\uCondition.controllers.js.map" />
-    <Content Include="App_Plugins\uCondition\uCondition.models.js.map" />
     <None Include="packages.config" />
     <Content Include="Views\Web.config" />
     <Content Include="Views\Partials\Grid\Editors\Textstring.cshtml" />

@@ -21,10 +21,10 @@ namespace uCondition.ConditionalPublicAccess
         public void Init(HttpApplication context)
         {
             context.AuthenticateRequest +=
-                (sender, e) => Context_BeginRequest(new HttpContextWrapper(((HttpApplication)sender).Context));
+                (sender, e) => Context_AuthenticateRequest(new HttpContextWrapper(((HttpApplication)sender).Context));
         }
 
-        private void Context_BeginRequest(HttpContextBase context)
+        private void Context_AuthenticateRequest(HttpContextBase context)
         {
             EnsureUmbracoContext(context);
 
@@ -56,7 +56,8 @@ namespace uCondition.ConditionalPublicAccess
                 }
 
                 ids = content.Path
-                    .Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Select(c => int.Parse(c));
+                    .Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
+                    .Select(c => int.Parse(c));
             }
 
             if (ids == null && !ids.Any())
@@ -66,6 +67,7 @@ namespace uCondition.ConditionalPublicAccess
 
             var protectedPage = new ProtectedPageProvider().LoadForPath(ids);
             var hasAccess = ConditionalAccess.HasAccess(protectedPage);
+
             if (protectedPage == null || hasAccess)
             {
                 return;

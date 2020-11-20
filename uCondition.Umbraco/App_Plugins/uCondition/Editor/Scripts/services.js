@@ -20,18 +20,22 @@ var uCondition;
                 return uConditionApiService;
             }());
             Services.uConditionApiService = uConditionApiService;
+
             var PredicateSyncService = (function () {
                 function PredicateSyncService(uConditionApiService) {
                     this.uConditionApiService = uConditionApiService;
                 }
+
                 PredicateSyncService.prototype.SyncPredicateGroups = function (predicateGroups) {
-                    var that = this;
-                    this.uConditionApiService.GetPredicates().then(function (predicateConfigs) {
-                        for (var i = 0; i < predicateGroups.length; i++) {
-                            that.SyncPredicateGroup(predicateGroups[i], predicateConfigs);
-                        }
-                    });
+                    var _this = this;
+                    _this.uConditionApiService.GetPredicates()
+                        .then(predicateConfigs => {
+                            for (var i = 0; i < predicateGroups.length; i++) {
+                                _this.SyncPredicateGroup(predicateGroups[i], predicateConfigs.data);
+                            }
+                        });
                 };
+
                 PredicateSyncService.prototype.SyncPredicateGroup = function (predicateGroup, predicateConfigs) {
                     for (var i = 0; i < predicateGroup.Conditions.length; i++) {
                         var currentPredicate = predicateGroup.Conditions[i];
@@ -50,9 +54,11 @@ var uCondition;
                         }
                     }
                 };
+
                 PredicateSyncService.prototype.SyncPredicate = function (predicate, predicateConfig) {
                     predicate.Config = predicateConfig;
                 };
+
                 PredicateSyncService.prototype.FindPredicateConfigByAlias = function (alias, predicateConfigs) {
                     for (var i = 0; i < predicateConfigs.length; i++) {
                         if (predicateConfigs[i].Alias == alias)
@@ -60,6 +66,7 @@ var uCondition;
                     }
                     return null;
                 };
+
                 return PredicateSyncService;
             }());
             Services.PredicateSyncService = PredicateSyncService;
