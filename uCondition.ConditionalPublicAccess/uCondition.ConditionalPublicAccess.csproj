@@ -263,9 +263,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Components\MiddlewareComponent.cs" />
+    <Compile Include="Components\MigrationComponent.cs" />
     <Compile Include="Composers\MiddlewareComposer.cs" />
+    <Compile Include="Composers\MigrationComposer.cs" />
     <Compile Include="Composers\UConditionPublicAccessComposer.cs" />
     <Compile Include="Components\UConditionPublicAccessComponent.cs" />
+    <Compile Include="Data\Migrations\CreateProtectedPageTable.cs" />
     <Compile Include="Middlewares\ConditionalAccessMiddleware.cs" />
     <Compile Include="uConditionPublicAccessApiController.cs" />
     <Compile Include="Helpers\ConditionalAccess.cs" />
