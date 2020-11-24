@@ -17,6 +17,7 @@ namespace uCondition.ConditionalPublicAccess.Data
 
         [Column(Name = nameof(Conditions))]
         [SerializedColumn]
+        [SpecialDbType(SpecialDbTypes.NVARCHARMAX)]
         public List<ProtectedPageCondition> Conditions { get; set; }
     }
 }
