@@ -270,7 +270,8 @@
     <Compile Include="Components\UConditionPublicAccessComponent.cs" />
     <Compile Include="Data\Migrations\CreateProtectedPageTable.cs" />
     <Compile Include="Middlewares\ConditionalAccessMiddleware.cs" />
-    <Compile Include="uConditionPublicAccessApiController.cs" />
+    <Compile Include="ProtectedPageProviders\DatabaseProtectedPageProvider.cs" />
+    <Compile Include="Controllers\uConditionPublicAccessApiController.cs" />
     <Compile Include="Helpers\ConditionalAccess.cs" />
     <Compile Include="Data\ProtectedPage.cs" />
     <Compile Include="Data\ProtectedPageCondition.cs" />
