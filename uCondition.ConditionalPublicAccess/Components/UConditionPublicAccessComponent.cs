@@ -1,4 +1,5 @@
-﻿using Umbraco.Core.Composing;
+﻿using uCondition.ConditionalPublicAccess.ProtectedPageProviders;
+using Umbraco.Core.Composing;
 using Umbraco.Web;
 using Umbraco.Web.Models.Trees;
 using Umbraco.Web.Trees;
@@ -8,10 +9,14 @@ namespace uCondition.ConditionalPublicAccess.Composers
     public class UConditionPublicAccessComponent : IComponent
     {
         private readonly IUmbracoContextFactory _umbracoContextFactory;
+        private readonly IProtectedPageProvider _protectedPageProvider;
 
-        public UConditionPublicAccessComponent(IUmbracoContextFactory umbracoContextFactory)
+        public UConditionPublicAccessComponent(
+            IUmbracoContextFactory umbracoContextFactory,
+            IProtectedPageProvider protectedPageProvider)
         {
             _umbracoContextFactory = umbracoContextFactory;
+            _protectedPageProvider = protectedPageProvider;
         }
 
         public void Initialize()
@@ -52,8 +57,6 @@ namespace uCondition.ConditionalPublicAccess.Composers
                 return;
             }
 
-            var protectedPages = new ProtectedPageProvider().Load();
-
             using (var umbracoContextReference = _umbracoContextFactory.EnsureUmbracoContext())
             {
                 foreach (var node in e.Nodes)
@@ -72,15 +75,17 @@ namespace uCondition.ConditionalPublicAccess.Composers
                         continue;
                     }
 
-                    if (protectedPages.Pages.Any(c => c.Id == nodeId))
-                    {
-                        node.CssClasses.Add("uConditionAccess");
-                    }
-                    else if (protectedPages.Pages.Any(c => itemPath.IndexOf(c.Id.ToString()) >= 0))
-                    {
-                        node.CssClasses.Add("uConditionAccess");
-                        node.CssClasses.Add("inheritedAccess");
-                    }
+                    // TODO: WIP
+
+                    //                    if (protectedPages.Pages.Any(c => c.Id == nodeId))
+                    //                    {
+                    //                        node.CssClasses.Add("uConditionAccess");
+                    //                    }
+                    //                    else if (protectedPages.Pages.Any(c => itemPath.IndexOf(c.Id.ToString()) >= 0))
+                    //                    {
+                    //                        node.CssClasses.Add("uConditionAccess");
+                    //                        node.CssClasses.Add("inheritedAccess");
+                    //                    }
                 }
             }
         }

@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using System.Web.Http;
 using System.Web.Script.Serialization;
 using uCondition.ConditionalPublicAccess.Data;
 using uCondition.ConditionalPublicAccess.Data.ViewModels;
+using uCondition.ConditionalPublicAccess.ProtectedPageProviders;
 using uCondition.Core.Models.Converter;
 using Umbraco.Web.WebApi;
 
@@ -12,56 +12,79 @@ namespace uCondition.ConditionalPublicAccess
     [IsBackOffice]
     public class UConditionPublicAccessApiController : UmbracoApiController
     {
+        private readonly IProtectedPageProvider _protectedPageProvider;
+        private readonly JavaScriptSerializer _scriptSerializer;
+        private readonly uConditionModelConverter _uConditionModelConverter;
+
+        public UConditionPublicAccessApiController(IProtectedPageProvider protectedPageProvider)
+        {
+            _protectedPageProvider = protectedPageProvider;
+            _scriptSerializer = new JavaScriptSerializer();
+            _uConditionModelConverter = new uConditionModelConverter();
+        }
+
         [UmbracoAuthorize]
         [HttpPost]
         public void Save([FromUri] int id, [FromBody] ProtectedPageViewModel model)
         {
-            var protectedPageProvider = new ProtectedPageProvider();
-            var protectedPages = protectedPageProvider.Load();
-            var scriptSerializer = new JavaScriptSerializer();
             var protectedPageConditionList = new List<ProtectedPageCondition>();
 
             foreach (var condition in model.Conditions)
             {
                 var protectedPageCondition = new ProtectedPageCondition()
                 {
-                    Condition = scriptSerializer.Serialize(condition.Condition),
+                    Condition = _scriptSerializer.Serialize(condition.Condition),
                     FalseActionNodeId = condition.FalseActionNodeId
                 };
 
                 protectedPageConditionList.Add(protectedPageCondition);
             }
 
-            if (protectedPages.Pages.Any(c => c.Id == id))
-            {
-                var protectedPage = protectedPages.Pages.FirstOrDefault(p => p.Id == id);
+            var protectedPage = _protectedPageProvider.GetById(id);
 
-                protectedPage.Conditions = protectedPageConditionList;
-                protectedPage.Condition = scriptSerializer.Serialize(model.Condition);
-                protectedPage.FalseActionNodeId = model.FalseActionNodeId;
-            }
-            else
+            if (protectedPage == null)
             {
-                var pages = protectedPages.Pages;
-                var protectedPage = new ProtectedPage
+                protectedPage = new ProtectedPage
                 {
-                    Id = id,
-                    Condition = scriptSerializer.Serialize(model.Condition),
-                    FalseActionNodeId = model.FalseActionNodeId,
-                    Conditions = protectedPageConditionList
+                    NodeId = id.ToString()
                 };
-                pages.Add(protectedPage);
             }
 
-            protectedPageProvider.Save(protectedPages);
+            protectedPage.Conditions = protectedPageConditionList;
+            protectedPage.Condition = _scriptSerializer.Serialize(model.Condition);
+            protectedPage.FalseActionNodeId = model.FalseActionNodeId;
+
+            //            if (protectedPages.Pages.Any(c => c.Id == id))
+            //            {
+            //                var protectedPage = protectedPages.Pages.FirstOrDefault(p => p.Id == id);
+            //
+            //                protectedPage.Conditions = protectedPageConditionList;
+            //                protectedPage.Condition = scriptSerializer.Serialize(model.Condition);
+            //                protectedPage.FalseActionNodeId = model.FalseActionNodeId;
+            //            }
+            //            else
+            //            {
+            //                var pages = protectedPages.Pages;
+            //                var protectedPage = new ProtectedPage
+            //                {
+            //                    NodeId = id,
+            //                    Condition = scriptSerializer.Serialize(model.Condition),
+            //                    FalseActionNodeId = model.FalseActionNodeId,
+            //                    Conditions = protectedPageConditionList
+            //                };
+            //                pages.Add(protectedPage);
+            //            }
+            //
+            //            protectedPageProvider.Save(protectedPages);
+
+            _protectedPageProvider.SaveOrUpdate(protectedPage);
         }
 
         [UmbracoAuthorize]
         [HttpGet]
         public ProtectedPageViewModel Get([FromUri] int id)
         {
-            var protectedPages = new ProtectedPageProvider().Load();
-            var protectedPage = protectedPages?.Pages.FirstOrDefault(p => p.Id == id);
+            var protectedPage = _protectedPageProvider.GetById(id);
 
             if (protectedPage == null)
             {
@@ -74,29 +97,24 @@ namespace uCondition.ConditionalPublicAccess
             {
                 var conditionViewModel = new ProtectedPageConditionViewModel()
                 {
-                    Condition = new uConditionModelConverter().Convert(condition.Condition),
+                    Condition = _uConditionModelConverter.Convert(condition.Condition),
                     FalseActionNodeId = condition.FalseActionNodeId
                 };
 
                 protectedPageViewModel.Conditions.Add(conditionViewModel);
             }
 
-            protectedPageViewModel.Condition = new uConditionModelConverter().Convert(protectedPage.Condition);
+            protectedPageViewModel.Condition = _uConditionModelConverter.Convert(protectedPage.Condition);
             protectedPageViewModel.FalseActionNodeId = protectedPage.FalseActionNodeId;
 
             return protectedPageViewModel;
         }
 
         [UmbracoAuthorize]
-        [HttpGet]
+        [HttpDelete]
         public void Delete([FromUri] int id)
         {
-            var protectedPageProvider = new ProtectedPageProvider();
-            var protectedPages = protectedPageProvider.Load();
-            var protectedPage = protectedPages.Pages.FirstOrDefault(c => c.Id == id);
-
-            protectedPages.Pages.Remove(protectedPage);
-            protectedPageProvider.Save(protectedPages);
+            _protectedPageProvider.Delete(id);
         }
     }
 }

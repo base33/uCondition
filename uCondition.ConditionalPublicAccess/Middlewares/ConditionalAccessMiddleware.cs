@@ -4,8 +4,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
-using uCondition.ConditionalPublicAccess.Data;
-using uCondition.ConditionalPublicAccess.Helpers;
+using uCondition.ConditionalPublicAccess.ProtectedPageProviders;
 using Umbraco.Core.Services;
 using Umbraco.Web;
 
@@ -16,16 +15,19 @@ namespace uCondition.ConditionalPublicAccess.Middlewares
         private readonly IUmbracoContextFactory _umbracoContextFactory;
         private readonly IMediaService _mediaService;
         private readonly IDomainService _domainService;
+        private readonly IProtectedPageProvider _protectedPageProvider;
 
         public ConditionalAccessMiddleware(
             OwinMiddleware next,
             IUmbracoContextFactory umbracoContextFactory,
             IMediaService mediaService,
-            IDomainService domainService) : base(next)
+            IDomainService domainService,
+            IProtectedPageProvider protectedPageProvider) : base(next)
         {
             _umbracoContextFactory = umbracoContextFactory;
             _mediaService = mediaService;
             _domainService = domainService;
+            _protectedPageProvider = protectedPageProvider;
         }
 
         public override Task Invoke(IOwinContext context)
@@ -87,23 +89,25 @@ namespace uCondition.ConditionalPublicAccess.Middlewares
                     return;
                 }
 
-                var protectedPage = new ProtectedPageProvider().LoadForPath(ids);
-                var hasAccess = ConditionalAccess.HasAccess(protectedPage);
-
-                if (protectedPage == null || hasAccess)
-                {
-                    return;
-                }
-
-                foreach (ProtectedPageCondition condition in protectedPage.Conditions)
-                {
-                    if (ConditionalAccess.TestCondition(condition.Condition))
-                    {
-                        context.Response.Redirect($"{contentCache.GetById(condition.FalseActionNodeId).Url()}?returnUrl={requestUrl}");
-                    }
-                }
-
-                context.Response.Redirect($"{contentCache.GetById(protectedPage.FalseActionNodeId).Url()}?returnUrl={requestUrl}");
+                //                // TODO WIP
+                //
+                //                var protectedPage = new ProtectedPageProvider().LoadForPath(ids);
+                //                var hasAccess = ConditionalAccess.HasAccess(protectedPage);
+                //
+                //                if (protectedPage == null || hasAccess)
+                //                {
+                //                    return;
+                //                }
+                //
+                //                foreach (ProtectedPageCondition condition in protectedPage.Conditions)
+                //                {
+                //                    if (ConditionalAccess.TestCondition(condition.Condition))
+                //                    {
+                //                        context.Response.Redirect($"{contentCache.GetById(condition.FalseActionNodeId).Url()}?returnUrl={requestUrl}");
+                //                    }
+                //                }
+                //
+                //                context.Response.Redirect($"{contentCache.GetById(protectedPage.FalseActionNodeId).Url()}?returnUrl={requestUrl}");
             }
         }
     }

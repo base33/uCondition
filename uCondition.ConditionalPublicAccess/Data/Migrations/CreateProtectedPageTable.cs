@@ -1,4 +1,5 @@
-﻿using Umbraco.Core.Logging;
+﻿using System;
+using Umbraco.Core.Logging;
 using Umbraco.Core.Migrations;
 
 namespace uCondition.ConditionalPublicAccess.Data.Migrations
@@ -15,7 +16,15 @@ namespace uCondition.ConditionalPublicAccess.Data.Migrations
 
             if (TableExists(nameof(ProtectedPage)) == false)
             {
-                Create.Table<ProtectedPage>().Do();
+                try
+                {
+                    Create.Table<ProtectedPage>().Do();
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                    throw;
+                }
             }
         }
     }

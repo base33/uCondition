@@ -1,38 +1,36 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Web.Mvc;
 using uCondition.ConditionalPublicAccess.Data;
 using uCondition.Core.Interfaces;
 using uCondition.Core.Models.Converter;
 using uCondition.ExpressionEngine;
-using Umbraco.Core.Models.PublishedContent;
 
 namespace uCondition.ConditionalPublicAccess.Helpers
 {
     public class ConditionalAccess
     {
-        public static bool HasAccess(string path)
-        {
-            var protectedPage = new ProtectedPageProvider()
-                .LoadForPath(
-                    path.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
-                        .Select(c => int.Parse(c))
-                        .ToList());
-
-            return protectedPage == null || HasAccess(protectedPage);
-        }
-
-        public static bool HasAccess(IPublishedContent content)
-        {
-            var protectedPage = new ProtectedPageProvider()
-                .LoadForPath(
-                    content.Path
-                        .Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
-                        .Select(c => int.Parse(c))
-                        .ToList());
-
-            return protectedPage == null || HasAccess(protectedPage);
-        }
+        //        public static bool HasAccess(string path)
+        //        {
+        //            var protectedPage = new ProtectedPageProvider()
+        //                .LoadForPath(
+        //                    path.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
+        //                        .Select(c => int.Parse(c))
+        //                        .ToList());
+        //
+        //            return protectedPage == null || HasAccess(protectedPage);
+        //        }
+        //
+        //        public static bool HasAccess(IPublishedContent content)
+        //        {
+        //            var protectedPage = new ProtectedPageProvider()
+        //                .LoadForPath(
+        //                    content.Path
+        //                        .Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
+        //                        .Select(c => int.Parse(c))
+        //                        .ToList());
+        //
+        //            return protectedPage == null || HasAccess(protectedPage);
+        //        }
 
         public static bool HasAccess(ProtectedPage protectedPage)
         {

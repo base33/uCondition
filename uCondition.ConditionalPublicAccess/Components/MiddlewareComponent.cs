@@ -1,5 +1,6 @@
 ﻿using Owin;
 using uCondition.ConditionalPublicAccess.Middlewares;
+using uCondition.ConditionalPublicAccess.ProtectedPageProviders;
 using Umbraco.Core.Composing;
 using Umbraco.Core.Services;
 using Umbraco.Web;
@@ -11,15 +12,18 @@ namespace uCondition.ConditionalPublicAccess.Composers
         private readonly IMediaService _mediaService;
         private readonly IDomainService _domainService;
         private readonly IUmbracoContextFactory _umbracoContextFactory;
+        private readonly IProtectedPageProvider _protectedPageProvider;
 
         public MiddlewareComponent(
             IMediaService mediaService,
             IDomainService domainService,
-            IUmbracoContextFactory umbracoContextFactory)
+            IUmbracoContextFactory umbracoContextFactory,
+            IProtectedPageProvider protectedPageProvider)
         {
             _mediaService = mediaService;
             _domainService = domainService;
             _umbracoContextFactory = umbracoContextFactory;
+            _protectedPageProvider = protectedPageProvider;
         }
 
         public void Initialize()
@@ -37,7 +41,8 @@ namespace uCondition.ConditionalPublicAccess.Composers
             args.AppBuilder.Use<ConditionalAccessMiddleware>(
                 _umbracoContextFactory,
                 _mediaService,
-                _domainService);
+                _domainService,
+                _protectedPageProvider);
         }
     }
 }

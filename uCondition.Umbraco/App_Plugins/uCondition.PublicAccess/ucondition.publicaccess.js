@@ -144,7 +144,6 @@ var uConditionPublicAccess;
         }());
 
         Controllers.PublicAccessController = PublicAccessController;
-
     })(Controllers = uConditionPublicAccess.Controllers || (uConditionPublicAccess.Controllers = {}));
 
     var Models;
@@ -187,14 +186,13 @@ var uConditionPublicAccess;
             };
 
             uConditionPublicAccessService.prototype.RemoveCondition = function (id) {
-                return this.$http.get("/Umbraco/BackOffice/Api/uConditionPublicAccessApi/Delete?id=" + id);
+                return this.$http.delete("/Umbraco/BackOffice/Api/uConditionPublicAccessApi/Delete?id=" + id);
             };
 
             return uConditionPublicAccessService;
         }());
 
         Services.uConditionPublicAccessService = uConditionPublicAccessService;
-
     })(Services = uConditionPublicAccess.Services || (uConditionPublicAccess.Services = {}));
 })(uConditionPublicAccess || (uConditionPublicAccess = {}));
 

@@ -12,10 +12,15 @@ namespace uCondition.Core.Data.Models
     public interface IGlobalConditionsRepository
     {
         void Delete(int id);
+
         IEnumerable<GlobalCondition> GetAll();
+
         GlobalCondition GetSingle(int id);
+
         GlobalCondition GetSingle(string guid);
+
         int Insert(GlobalCondition globalCondition);
+
         void Update(GlobalCondition globalCondition);
     }
 
@@ -23,20 +28,27 @@ namespace uCondition.Core.Data.Models
     {
         protected readonly IScopeAccessor scopeAccessor;
         protected readonly IProfilingLogger logger;
+
         protected IScope AmbientScope
         {
             get
             {
                 var scope = scopeAccessor.AmbientScope;
+
                 if (scope == null)
+                {
                     throw new InvalidOperationException("Cannot run repository without an ambient scope");
+                }
 
                 return scope;
             }
         }
+
         protected IUmbracoDatabase Database => AmbientScope.Database;
         protected ISqlContext SqlContext => AmbientScope.SqlContext;
+
         protected Sql<ISqlContext> Sql() => SqlContext.Sql();
+
         protected ISqlSyntaxProvider SqlSyntax => SqlContext.SqlSyntax;
 
         public GlobalConditionsRepository(IScopeAccessor scopeAccessor, IProfilingLogger logger)
