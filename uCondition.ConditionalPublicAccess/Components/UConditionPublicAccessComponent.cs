@@ -1,7 +1,10 @@
-﻿using System.Linq;
+﻿using Owin;
+using System.Linq;
 using uCondition.ConditionalPublicAccess.Data;
+using uCondition.ConditionalPublicAccess.Middlewares;
 using Umbraco.Core.Composing;
 using Umbraco.Core.Services;
+using Umbraco.Web;
 using Umbraco.Web.Models.Trees;
 using Umbraco.Web.Trees;
 
@@ -10,18 +13,22 @@ namespace uCondition.ConditionalPublicAccess.Composers
     public class UConditionPublicAccessComponent : IComponent
     {
         private readonly IMediaService _mediaService;
-        private readonly IContentService _contentService;
+        private readonly IDomainService _domainService;
+        private readonly IUmbracoContextFactory _umbracoContextFactory;
 
-        public UConditionPublicAccessComponent(IMediaService mediaService, IContentService contentService)
+        public UConditionPublicAccessComponent(IMediaService mediaService, IDomainService domainService, IUmbracoContextFactory umbracoContextFactory)
         {
             _mediaService = mediaService;
-            _contentService = contentService;
+            _domainService = domainService;
+            _umbracoContextFactory = umbracoContextFactory;
         }
 
         public void Initialize()
         {
             TreeControllerBase.TreeNodesRendering += ContentTreeController_TreeNodesRendering;
             TreeControllerBase.MenuRendering += ContentTreeController_MenuRendering;
+
+            UmbracoDefaultOwinStartup.MiddlewareConfigured += (_, args) => ConfigureMiddleware(args.AppBuilder);
         }
 
         public void Terminate()
@@ -58,32 +65,40 @@ namespace uCondition.ConditionalPublicAccess.Composers
 
             var protectedPages = new ProtectedPageProvider().Load();
 
-            foreach (var node in e.Nodes)
+            using (var umbracoContextReference = _umbracoContextFactory.EnsureUmbracoContext())
             {
-                if (!int.TryParse((string)node.Id, out var nodeId))
+                foreach (var node in e.Nodes)
                 {
-                    continue;
-                }
+                    if (!int.TryParse((string)node.Id, out var nodeId))
+                    {
+                        continue;
+                    }
 
-                var itemPath = sender.TreeAlias == "content"
-                               ? _contentService.GetById(nodeId)?.Path
-                               : _mediaService.GetById(nodeId)?.Path;
+                    var itemPath = sender.TreeAlias == "content"
+                                   ? umbracoContextReference.UmbracoContext.Content.GetById(nodeId)?.Path
+                                   : umbracoContextReference.UmbracoContext.Media.GetById(nodeId)?.Path;
 
-                if (itemPath == null || string.IsNullOrWhiteSpace(itemPath))
-                {
-                    continue;
-                }
+                    if (itemPath == null || string.IsNullOrWhiteSpace(itemPath))
+                    {
+                        continue;
+                    }
 
-                if (protectedPages.Pages.Any(c => c.Id == nodeId))
-                {
-                    node.CssClasses.Add("uConditionAccess");
-                }
-                else if (protectedPages.Pages.Any(c => itemPath.IndexOf(c.Id.ToString()) >= 0))
-                {
-                    node.CssClasses.Add("uConditionAccess");
-                    node.CssClasses.Add("inheritedAccess");
+                    if (protectedPages.Pages.Any(c => c.Id == nodeId))
+                    {
+                        node.CssClasses.Add("uConditionAccess");
+                    }
+                    else if (protectedPages.Pages.Any(c => itemPath.IndexOf(c.Id.ToString()) >= 0))
+                    {
+                        node.CssClasses.Add("uConditionAccess");
+                        node.CssClasses.Add("inheritedAccess");
+                    }
                 }
             }
+        }
+
+        private void ConfigureMiddleware(IAppBuilder appBuilder)
+        {
+            appBuilder.Use<ConditionalAccessMiddleware>(_umbracoContextFactory, _mediaService, _domainService);
         }
     }
 }

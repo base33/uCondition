@@ -1,60 +1,23 @@
-﻿<div ng-controller="uCondition.PublicAccess as Ctrl">
-    <form name="contentForm"
-          novalidate
-          val-form-manager>
-        <umb-editor-view>
-            <div class="umb-editor-header umb-panel-header ng-scope" name="dashboard.name" name-locked="page.nameLocked" tabs="dashboard.tabs" hide-icon="true" hide-description="true" hide-alias="true">
+﻿<div ng-controller="uCondition.PublicAccess as vm">
 
-                <div class="umb-panel-header-content-wrapper">
+    <div class="umb-dialog-body with-footer">
 
-                    <div class="umb-panel-header-content">
+        <umb-load-indicator ng-if="vm.loading">
+        </umb-load-indicator>
 
-                        <div class="umb-panel-header-left-side -top-position" ng-class="{'-top-position': tabs || !icon }">
+        <div ng-if="!vm.loading">
 
-                            <!-- ngIf: !hideIcon -->
+            <umb-pane>
+                <h5>Conditional page protection</h5>
 
-                            <div class="umb-panel-header-title-wrapper">
-                                <h2>Conditionally protect page</h2>
-                                <h5>For {{currentNode.name}}</h5>
-                            </div>
-
-                            <!-- ngIf: menu.currentNode -->
-
-                        </div>
-
-                        <!-- ngIf: navigation -->
-
-                    </div>
-
-
+                <div ng-if="vm.EditorModel != null">
+                    <ucondition-editor value="vm.EditorModel.Condition"></ucondition-editor>
                 </div>
-
-                <!-- ngIf: dialogModel.show -->
-
-            </div>
-
-            <div class="uCondition-pane" style="height:100%;">
-                <div class="abstract">
-                    <h5>Conditional page protection</h5>
-                </div>
-                <div ng-if="Ctrl.EditorModel != null">
-                    <ucondition-editor value="Ctrl.EditorModel.Condition"></ucondition-editor>
-                </div>
-
-                <div class="uCondition-contentpickercontainer">
-                    <p>
-                        If false, the user should be redirect to:
-                        <span ng-if="editModel != null" class="uConditionContentPicker" ng-class="{'add': Ctrl.EditorModel.FalseActionNodeId == '' || Ctrl.EditorModel.FalseActionNodeId == 0 }">
-                            <ucondition-content-picker model="Ctrl.EditorModel.FalseActionNodeId"></ucondition-content-picker>
-                        </span>
-                    </p>
-                </div>
-
 
                 <div class="advancedContainer">
                     <a href="" ng-click="showAdvanced = !showAdvanced">
                         {{!showAdvanced ? 'Show' : 'Hide'}} advanced actions
-                        ({{Ctrl.EditorModel.Conditions.length}} configured)
+                        ({{vm.EditorModel.Conditions.length}} configured)
                     </a>
                     <div ng-show="showAdvanced">
                         <h5>Advanced actions</h5>
@@ -63,12 +26,12 @@
                             The action will override the action above if the condition is true.
                         </div>
 
-                        <div class="advancedCondition" ng-repeat="subAction in Ctrl.EditorModel.Conditions">
+                        <div class="advancedCondition" ng-repeat="subAction in vm.EditorModel.Conditions">
                             <h6>
-                                <a ng-click="Ctrl.Move(Ctrl.EditorModel.Conditions, $index, $index-1)" title="move up"><i class="icon icon-navigation-up"></i></a>
-                                <a ng-click="Ctrl.Move(Ctrl.EditorModel.Conditions, $index, $index+1)" title="move down"><i class="icon icon-navigation-down"></i></a>
+                                <a ng-click="vm.Move(vm.EditorModel.Conditions, $index, $index-1)" title="move up"><i class="icon icon-navigation-up"></i></a>
+                                <a ng-click="vm.Move(vm.EditorModel.Conditions, $index, $index+1)" title="move down"><i class="icon icon-navigation-down"></i></a>
                                 Conditional Action {{$index + 1}}
-                                <a ng-click="Ctrl.EditorModel.Conditions.splice($index, 1)" class="removeButton"><i class="icon icon-delete red"></i> remove</a>
+                                <a ng-click="vm.EditorModel.Conditions.splice($index, 1)" class="removeButton"><i class="icon icon-delete red"></i> remove</a>
                             </h6>
                             <div>
                                 <ucondition-editor value="subAction.Condition"></ucondition-editor>
@@ -77,7 +40,7 @@
                             <div class="uCondition-contentpickercontainer">
                                 <p>
                                     If this condition is true, what page should the user be redirected to?
-                                    <span ng-if="editModel != null" class="uConditionContentPicker" ng-class="{'add': subAction.FalseActionNodeId == '' || Ctrl.EditorModel.FalseActionNodeId == 0 }">
+                                    <span ng-if="editModel != null" class="uConditionContentPicker" ng-class="{'add': subAction.FalseActionNodeId == '' || vm.EditorModel.FalseActionNodeId == 0 }">
                                         <ucondition-content-picker model="subAction.FalseActionNodeId"></ucondition-content-picker>
                                     </span>
                                 </p>
@@ -85,55 +48,58 @@
 
                         </div>
                         <div class="uCondition-advanced-buttons">
-                            <button class="btn btn-primary" ng-click="Ctrl.AddFalseCondition()">Add Action Condition</button>
+                            <button class="btn btn-primary" ng-click="vm.AddFalseCondition()">Add Action Condition</button>
                         </div>
                     </div>
                 </div>
+            </umb-pane>
 
-            </div>
+            <umb-pane>
+                <div class="control-group umb-control-group -no-border">
+                    <div class="umb-el-wrap mt4">
+                        <div class="control-header">
+                            <label class="control-label">Redirect page</label>
+                            <small class="control-description">Choose the page where user should be redirected if conditions are met</small>
+                        </div>
+                        <div class="mt2" ui-sortable ng-model="vm.EditorModel.FalseActionNode">
+                            <umb-node-preview ng-show="vm.EditorModel.FalseActionNode"
+                                              icon="vm.EditorModel.FalseActionNode.icon"
+                                              name="vm.EditorModel.FalseActionNode.name"
+                                              allow-remove="true"
+                                              on-remove="vm.EditorModel.FalseActionNode = null">
+                            </umb-node-preview>
+                            <button type="button" ng-show="!vm.EditorModel.FalseActionNode" ng-click="vm.PickFalseActionNodeId()" class="umb-node-preview-add">
+                                <localize key="general_add">Add</localize>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </umb-pane>
 
-            <umb-editor-footer>
-                <umb-editor-footer-content-left>
-                    <btn class="btn btn-danger pull-left" ng-click="Ctrl.RemoveProtection()">
-                        Remove Protection
-                    </btn>
-                </umb-editor-footer-content-left>
+        </div>
 
-                <umb-editor-footer-content-right>
-                    <button class="btn btn-primary" ng-click="Ctrl.SaveChanges()">
-                        Save
-                    </button>
-                </umb-editor-footer-content-right>
-            </umb-editor-footer>
-        </umb-editor-view>
-    </form>
+    </div>
+
+    <div class="umb-dialog-footer btn-toolbar umb-btn-toolbar" ng-if="!vm.loading">
+        <umb-button type="button"
+                    button-style="link"
+                    label-key="general_cancel"
+                    action="vm.Close()">
+        </umb-button>
+        <umb-button type="button"
+                    button-style="primary"
+                    label="Remove protection"
+                    action="vm.RemoveProtection()">
+        </umb-button>
+        <umb-button type="button"
+                    button-style="danger"
+                    label="Save and protect"
+                    action="vm.SaveChanges()">
+        </umb-button>
+    </div>
 </div>
 
-
 <style type="text/css">
-    #dialog {
-        min-width: 680px;
-    }
-
-    .uCondition-contentpickercontainer {
-        margin: 10px;
-    }
-
-    .uConditionContentPicker {
-        /*background: #f8f8f8;
-        padding: 10px 3px 1px;
-        border: 1px solid #c8e5fe;*/
-        display: inline-block;
-    }
-
-        .uConditionContentPicker.add {
-            padding: 10px 3px 10px;
-        }
-
-            .uConditionContentPicker.add ul {
-                margin: 0px !important;
-            }
-
     .advancedContainer {
         margin-top: 10px;
         border: 1px solid #98e4fb;
@@ -149,13 +115,6 @@
         .advancedContainer > div {
             padding: 10px;
         }
-
-    .uCondition-pane {
-        height: 100%;
-        overflow-y: scroll;
-        overflow-x: hidden;
-        padding: 30px 20px;
-    }
 
     .advancedCondition {
         margin-top: 20px;

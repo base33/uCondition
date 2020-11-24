@@ -18839,9 +18839,9 @@ Use this directive to render a user group preview, where you can see the permiss
                 // We need to ensure that the property model value is an object, this is needed for modelObject to recive a reference and keep that updated.
                 if (_typeof(newVal) !== 'object' || newVal === null) {
                     // testing if we have null or undefined value or if the value is set to another type than Object.
-                    newVal = {};
+                    vm.model.value = newVal = {};
                 }
-                modelObject.update(newVal, $scope);
+                modelObject.update(vm.model.value, $scope);
                 onLoaded();
             }
             function setDirty() {

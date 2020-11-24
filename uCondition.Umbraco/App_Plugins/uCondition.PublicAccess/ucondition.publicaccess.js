@@ -61,7 +61,7 @@ var uConditionPublicAccess;
                             })
                             .then(() => {
                                 if (that.EditorModel.FalseActionNodeId) {
-                                    resource.getById(that.EditorModel.FalseActionNodeId)
+                                    contentResource.getById(that.EditorModel.FalseActionNodeId)
                                         .then(response => {
                                             // Workaround for the variant or culture name for the node
                                             if (response.name == null && response.variants[0].name != null) {
