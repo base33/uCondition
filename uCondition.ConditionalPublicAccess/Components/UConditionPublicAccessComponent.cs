@@ -1,9 +1,4 @@
-﻿using Owin;
-using System.Linq;
-using uCondition.ConditionalPublicAccess.Data;
-using uCondition.ConditionalPublicAccess.Middlewares;
-using Umbraco.Core.Composing;
-using Umbraco.Core.Services;
+﻿using Umbraco.Core.Composing;
 using Umbraco.Web;
 using Umbraco.Web.Models.Trees;
 using Umbraco.Web.Trees;
@@ -12,14 +7,10 @@ namespace uCondition.ConditionalPublicAccess.Composers
 {
     public class UConditionPublicAccessComponent : IComponent
     {
-        private readonly IMediaService _mediaService;
-        private readonly IDomainService _domainService;
         private readonly IUmbracoContextFactory _umbracoContextFactory;
 
-        public UConditionPublicAccessComponent(IMediaService mediaService, IDomainService domainService, IUmbracoContextFactory umbracoContextFactory)
+        public UConditionPublicAccessComponent(IUmbracoContextFactory umbracoContextFactory)
         {
-            _mediaService = mediaService;
-            _domainService = domainService;
             _umbracoContextFactory = umbracoContextFactory;
         }
 
@@ -27,8 +18,6 @@ namespace uCondition.ConditionalPublicAccess.Composers
         {
             TreeControllerBase.TreeNodesRendering += ContentTreeController_TreeNodesRendering;
             TreeControllerBase.MenuRendering += ContentTreeController_MenuRendering;
-
-            UmbracoDefaultOwinStartup.MiddlewareConfigured += (_, args) => ConfigureMiddleware(args.AppBuilder);
         }
 
         public void Terminate()
@@ -94,11 +83,6 @@ namespace uCondition.ConditionalPublicAccess.Composers
                     }
                 }
             }
-        }
-
-        private void ConfigureMiddleware(IAppBuilder appBuilder)
-        {
-            appBuilder.Use<ConditionalAccessMiddleware>(_umbracoContextFactory, _mediaService, _domainService);
         }
     }
 }

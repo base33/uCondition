@@ -1,11 +1,10 @@
 ﻿using uCondition.Core.Data.Migrations;
-using Umbraco.Core.Logging;
 using Umbraco.Core.Composing;
+using Umbraco.Core.Logging;
 using Umbraco.Core.Migrations;
 using Umbraco.Core.Migrations.Upgrade;
 using Umbraco.Core.Scoping;
 using Umbraco.Core.Services;
-using System.Web.Http;
 
 namespace uCondition.Core.Components
 {
@@ -16,8 +15,7 @@ namespace uCondition.Core.Components
         private readonly IKeyValueService _keyValueService;
         private readonly ILogger _logger;
 
-        public UConditionComponent(IScopeProvider scopeProvider, IMigrationBuilder migrationBuilder,
-            IKeyValueService keyValueService, ILogger logger)
+        public UConditionComponent(IScopeProvider scopeProvider, IMigrationBuilder migrationBuilder, IKeyValueService keyValueService, ILogger logger)
         {
             _scopeProvider = scopeProvider;
             _migrationBuilder = migrationBuilder;

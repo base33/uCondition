@@ -17,8 +17,11 @@ namespace uCondition.ConditionalPublicAccess.Middlewares
         private readonly IMediaService _mediaService;
         private readonly IDomainService _domainService;
 
-        public ConditionalAccessMiddleware(OwinMiddleware next, IUmbracoContextFactory umbracoContextFactory,
-            IMediaService mediaService, IDomainService domainService) : base(next)
+        public ConditionalAccessMiddleware(
+            OwinMiddleware next,
+            IUmbracoContextFactory umbracoContextFactory,
+            IMediaService mediaService,
+            IDomainService domainService) : base(next)
         {
             _umbracoContextFactory = umbracoContextFactory;
             _mediaService = mediaService;
@@ -31,7 +34,7 @@ namespace uCondition.ConditionalPublicAccess.Middlewares
             {
                 ProcessConditionalAccessRequest(context);
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 // Intentionally ignored
             }
