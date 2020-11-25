@@ -6,18 +6,19 @@ namespace uCondition.ConditionalPublicAccess.Data
 {
     [PrimaryKey(nameof(Id), AutoIncrement = true)]
     [TableName(nameof(ProtectedPage))]
+    [ExplicitColumns]
     public class ProtectedPage : ProtectedPageCondition
     {
         [Column(Name = nameof(Id))]
-        [PrimaryKeyColumn(AutoIncrement = true)]
+        [PrimaryKeyColumn(AutoIncrement = true, IdentitySeed = 1)]
         public int Id { get; set; }
 
         [Column(Name = nameof(NodeId))]
         public string NodeId { get; set; }
 
         [Column(Name = nameof(Conditions))]
-        [SerializedColumn]
         [SpecialDbType(SpecialDbTypes.NTEXT)]
+        [SerializedColumn]
         public List<ProtectedPageCondition> Conditions { get; set; }
     }
 }
