@@ -54,10 +54,18 @@ namespace uCondition.ConditionalPublicAccess.ProtectedPageProviders
         {
             using (var scope = _scopeProvider.CreateScope(autoComplete: true))
             {
-                var sql = scope.SqlContext.Sql()
-                .Delete<ProtectedPage>()
-                .Where<ProtectedPage>(p => p.NodeId.Equals(nodeId));
-                _ = scope.Database.Delete<ProtectedPage>(sql);
+                try
+                {
+                    _ = scope.Database
+                            .DeleteMany<ProtectedPage>()
+                            .Where(p => p.NodeId.Equals(nodeId))
+                            .Execute();
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                    throw;
+                }
             }
         }
 
