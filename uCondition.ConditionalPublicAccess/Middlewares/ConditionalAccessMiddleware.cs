@@ -1,9 +1,8 @@
 ﻿using Microsoft.Owin;
 using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
 using System.Threading.Tasks;
+using uCondition.ConditionalPublicAccess.Helpers;
 using uCondition.ConditionalPublicAccess.ProtectedPageProviders;
 using Umbraco.Core.Services;
 using Umbraco.Web;
@@ -36,7 +35,7 @@ namespace uCondition.ConditionalPublicAccess.Middlewares
             {
                 ProcessConditionalAccessRequest(context);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 // Intentionally ignored
             }
@@ -46,68 +45,43 @@ namespace uCondition.ConditionalPublicAccess.Middlewares
 
         private void ProcessConditionalAccessRequest(IOwinContext context)
         {
+            var requestUrl = context.Request.Path.ToString();
+            var currentDomain = _domainService.GetByName(context.Request.Uri.Host);
+            var domainPrefix = currentDomain != null
+                ? $"{currentDomain.RootContentId}/"
+                : string.Empty;
+
             using (var umbracoContextReference = _umbracoContextFactory.EnsureUmbracoContext())
             {
                 var umbracoContext = umbracoContextReference.UmbracoContext;
                 var contentCache = umbracoContext.Content;
-                var requestUrl = context.Request.Path.ToString();
 
-                IEnumerable<int> ids;
+                var ids = requestUrl.StartsWith("/media", true, CultureInfo.InvariantCulture)
+                    ? _mediaService.GetMediaByPath(requestUrl)?.Path
+                    : contentCache.GetByRoute($"{domainPrefix}{requestUrl}")?.Path;
 
-                var currentDomain = _domainService.GetByName(context.Request.Uri.Host);
-                var domainPrefix = currentDomain != null
-                    ? $"{currentDomain.RootContentId}/"
-                    : string.Empty;
-
-                if (requestUrl.StartsWith("/media", true, CultureInfo.InvariantCulture))
-                {
-                    var media = _mediaService.GetMediaByPath(requestUrl);
-                    if (media == null)
-                    {
-                        return;
-                    }
-
-                    ids = media.Path
-                        .Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
-                        .Select(c => int.Parse(c));
-                }
-                else
-                {
-                    var content = contentCache.GetByRoute($"{domainPrefix}{requestUrl}");
-                    if (content == null)
-                    {
-                        return;
-                    }
-
-                    ids = content.Path
-                        .Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
-                        .Select(c => int.Parse(c));
-                }
-
-                if (ids == null && !ids.Any())
+                if (string.IsNullOrWhiteSpace(ids))
                 {
                     return;
                 }
 
-                //                // TODO WIP
-                //
-                //                var protectedPage = new ProtectedPageProvider().LoadForPath(ids);
-                //                var hasAccess = ConditionalAccess.HasAccess(protectedPage);
-                //
-                //                if (protectedPage == null || hasAccess)
-                //                {
-                //                    return;
-                //                }
-                //
-                //                foreach (ProtectedPageCondition condition in protectedPage.Conditions)
-                //                {
-                //                    if (ConditionalAccess.TestCondition(condition.Condition))
-                //                    {
-                //                        context.Response.Redirect($"{contentCache.GetById(condition.FalseActionNodeId).Url()}?returnUrl={requestUrl}");
-                //                    }
-                //                }
-                //
-                //                context.Response.Redirect($"{contentCache.GetById(protectedPage.FalseActionNodeId).Url()}?returnUrl={requestUrl}");
+                var protectedPage = _protectedPageProvider.GetLastChild(ids);
+                var hasAccess = ConditionalAccess.HasAccess(protectedPage);
+
+                if (protectedPage == null || hasAccess)
+                {
+                    return;
+                }
+
+                foreach (var condition in protectedPage.Conditions)
+                {
+                    if (ConditionalAccess.TestCondition(condition.Condition))
+                    {
+                        context.Response.Redirect($"{contentCache.GetById(condition.FalseActionNodeId).Url()}?returnUrl={requestUrl}");
+                    }
+                }
+
+                context.Response.Redirect($"{contentCache.GetById(protectedPage.FalseActionNodeId).Url()}?returnUrl={requestUrl}");
             }
         }
     }

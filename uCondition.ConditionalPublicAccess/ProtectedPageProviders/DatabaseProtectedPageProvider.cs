@@ -33,16 +33,26 @@ namespace uCondition.ConditionalPublicAccess.ProtectedPageProviders
             }
         }
 
-        public IEnumerable<ProtectedPage> GetAll()
+        public IEnumerable<ProtectedPage> GetAllById(string nodeIds)
         {
             using (var scope = _scopeProvider.CreateScope(autoComplete: true))
             {
                 var sql = scope.SqlContext.Sql()
                     .Select("*")
-                    .From<ProtectedPage>();
+                    .From<ProtectedPage>()
+                    .WhereIn<ProtectedPage>(x => x.NodeId, nodeIds.Split(','));
 
                 return scope.Database.Fetch<ProtectedPage>(sql);
             }
+        }
+
+        public ProtectedPage GetLastChild(string nodeIds)
+        {
+            var protectedPages = GetAllById(nodeIds);
+
+            return protectedPages
+                .OrderByDescending(p => p.NodeId)
+                .FirstOrDefault();
         }
 
         public void Delete(int nodeId)

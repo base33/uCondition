@@ -9,7 +9,9 @@ namespace uCondition.ConditionalPublicAccess.ProtectedPageProviders
 
         ProtectedPage GetById(int nodeId);
 
-        IEnumerable<ProtectedPage> GetAll();
+        IEnumerable<ProtectedPage> GetAllById(string nodeIds);
+
+        ProtectedPage GetLastChild(string nodeIds);
 
         void Delete(int nodeId);
 
