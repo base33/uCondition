@@ -1,6 +1,7 @@
 ﻿using Microsoft.Owin;
 using System;
 using System.Globalization;
+using System.Linq;
 using System.Threading.Tasks;
 using uCondition.ConditionalPublicAccess.Helpers;
 using uCondition.ConditionalPublicAccess.ProtectedPageProviders;
@@ -77,11 +78,29 @@ namespace uCondition.ConditionalPublicAccess.Middlewares
                 {
                     if (ConditionalAccess.TestCondition(condition.Condition))
                     {
-                        context.Response.Redirect($"{contentCache.GetById(condition.FalseActionNodeId).Url()}?returnUrl={requestUrl}");
+                        var innerRedirectionNode = contentCache.GetById(condition.FalseActionNodeId);
+
+                        if (innerRedirectionNode == null)
+                        {
+                            innerRedirectionNode = currentDomain != null
+                                ? contentCache.GetById(currentDomain.RootContentId.Value)
+                                : contentCache.GetAtRoot().FirstOrDefault();
+                        }
+
+                        context.Response.Redirect($"{innerRedirectionNode.Url()}?returnUrl={requestUrl}");
                     }
                 }
 
-                context.Response.Redirect($"{contentCache.GetById(protectedPage.FalseActionNodeId).Url()}?returnUrl={requestUrl}");
+                var redirectionNode = contentCache.GetById(protectedPage.FalseActionNodeId);
+
+                if (redirectionNode == null)
+                {
+                    redirectionNode = currentDomain != null
+                        ? contentCache.GetById(currentDomain.RootContentId.Value)
+                        : contentCache.GetAtRoot().FirstOrDefault();
+                }
+
+                context.Response.Redirect($"{redirectionNode.Url()}?returnUrl={requestUrl}");
             }
         }
     }
