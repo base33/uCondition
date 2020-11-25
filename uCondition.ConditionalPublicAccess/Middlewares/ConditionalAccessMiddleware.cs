@@ -1,5 +1,6 @@
 ﻿using Microsoft.Owin;
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
@@ -47,6 +48,12 @@ namespace uCondition.ConditionalPublicAccess.Middlewares
         private void ProcessConditionalAccessRequest(IOwinContext context)
         {
             var requestUrl = context.Request.Path.ToString();
+
+            if (IsRestrictedPath(requestUrl))
+            {
+                return;
+            }
+
             var currentDomain = _domainService.GetByName(context.Request.Uri.Host);
             var domainPrefix = currentDomain != null
                 ? $"{currentDomain.RootContentId}/"
@@ -102,6 +109,21 @@ namespace uCondition.ConditionalPublicAccess.Middlewares
 
                 context.Response.Redirect($"{redirectionNode.Url()}?returnUrl={requestUrl}");
             }
+        }
+
+        private bool IsRestrictedPath(string inputPath)
+        {
+            return GetRestrictedPaths()
+                .Any(restrictedPath => inputPath
+                    .ToLower()
+                    .StartsWith($"/{restrictedPath.ToLower()}"));
+        }
+
+        private IEnumerable<string> GetRestrictedPaths()
+        {
+            var restrictedPaths = "umbraco,fonts,js,style,css,usync,App_Plugins";
+
+            return restrictedPaths.Split(',');
         }
     }
 }
