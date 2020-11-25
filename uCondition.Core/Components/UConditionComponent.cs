@@ -26,10 +26,6 @@ namespace uCondition.Core.Components
         public void Initialize()
         {
             PredicateManager.StartUp();
-
-            //GlobalConfiguration.Configuration.Formatters.JsonFormatter.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Serialize;
-            //GlobalConfiguration.Configuration.Formatters.Remove(GlobalConfiguration.Configuration.Formatters.XmlFormatter);
-
             HandleMigrations();
         }
 
