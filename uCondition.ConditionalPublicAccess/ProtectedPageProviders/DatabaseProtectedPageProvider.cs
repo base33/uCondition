@@ -1,5 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Linq;
 using uCondition.ConditionalPublicAccess.Data;
 using Umbraco.Core.Persistence;
 using Umbraco.Core.Scoping;
@@ -54,42 +54,46 @@ namespace uCondition.ConditionalPublicAccess.ProtectedPageProviders
         {
             using (var scope = _scopeProvider.CreateScope(autoComplete: true))
             {
-                try
-                {
-                    _ = scope.Database
-                            .DeleteMany<ProtectedPage>()
-                            .Where(p => p.NodeId.Equals(nodeId))
-                            .Execute();
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine(e);
-                    throw;
-                }
+                _ = scope.Database
+                    .DeleteMany<ProtectedPage>()
+                    .Where(p => p.NodeId.Equals(nodeId))
+                    .Execute();
             }
         }
 
         public void SaveOrUpdate(ProtectedPage protectedPage)
         {
-            try
+            using (var scope = _scopeProvider.CreateScope(autoComplete: true))
             {
-                using (var scope = _scopeProvider.CreateScope(autoComplete: true))
+                if (protectedPage.Id > 0)
                 {
-                    if (protectedPage.Id > 0)
-                    {
-                        _ = scope.Database.Update(protectedPage);
-                    }
-                    else
-                    {
-                        scope.Database.Save(protectedPage);
-                    }
+                    _ = scope.Database.Update(protectedPage);
+                }
+                else
+                {
+                    scope.Database.Save(protectedPage);
                 }
             }
-            catch (Exception e)
+        }
+
+        public bool HasAny(string nodeIds)
+        {
+            using (var scope = _scopeProvider.CreateScope(autoComplete: true))
             {
-                Console.WriteLine(e);
-                throw;
+                var sql = scope.SqlContext.Sql()
+                    .Select("*")
+                    .From<ProtectedPage>()
+                    .WhereIn<ProtectedPage>(x => x.NodeId, nodeIds.Split(','));
+
+                var result = scope.Database.Fetch<ProtectedPage>(sql);
+
+                return result != null && result.Any();
             }
+        }
+
+        public bool HasAny(int nodeId)
+        {
+            return HasAny(nodeId.ToString());
         }
     }
 }

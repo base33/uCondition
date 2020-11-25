@@ -75,17 +75,15 @@ namespace uCondition.ConditionalPublicAccess.Composers
                         continue;
                     }
 
-                    // TODO: WIP
-
-                    //                    if (protectedPages.Pages.Any(c => c.Id == nodeId))
-                    //                    {
-                    //                        node.CssClasses.Add("uConditionAccess");
-                    //                    }
-                    //                    else if (protectedPages.Pages.Any(c => itemPath.IndexOf(c.Id.ToString()) >= 0))
-                    //                    {
-                    //                        node.CssClasses.Add("uConditionAccess");
-                    //                        node.CssClasses.Add("inheritedAccess");
-                    //                    }
+                    if (_protectedPageProvider.HasAny(nodeId))
+                    {
+                        node.CssClasses.Add("uConditionAccess");
+                    }
+                    else if (_protectedPageProvider.HasAny(itemPath))
+                    {
+                        node.CssClasses.Add("uConditionAccess");
+                        node.CssClasses.Add("inheritedAccess");
+                    }
                 }
             }
         }

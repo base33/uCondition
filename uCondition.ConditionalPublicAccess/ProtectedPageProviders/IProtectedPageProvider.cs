@@ -16,5 +16,9 @@ namespace uCondition.ConditionalPublicAccess.ProtectedPageProviders
         void Delete(string nodeId);
 
         void SaveOrUpdate(ProtectedPage protectedPage);
+
+        bool HasAny(int nodeId);
+
+        bool HasAny(string nodeIds);
     }
 }
