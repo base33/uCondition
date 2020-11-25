@@ -9,29 +9,6 @@ namespace uCondition.ConditionalPublicAccess.Helpers
 {
     public class ConditionalAccess
     {
-        //        public static bool HasAccess(string path)
-        //        {
-        //            var protectedPage = new ProtectedPageProvider()
-        //                .LoadForPath(
-        //                    path.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
-        //                        .Select(c => int.Parse(c))
-        //                        .ToList());
-        //
-        //            return protectedPage == null || HasAccess(protectedPage);
-        //        }
-        //
-        //        public static bool HasAccess(IPublishedContent content)
-        //        {
-        //            var protectedPage = new ProtectedPageProvider()
-        //                .LoadForPath(
-        //                    content.Path
-        //                        .Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
-        //                        .Select(c => int.Parse(c))
-        //                        .ToList());
-        //
-        //            return protectedPage == null || HasAccess(protectedPage);
-        //        }
-
         public static bool HasAccess(ProtectedPage protectedPage)
         {
             return protectedPage == null || TestCondition(protectedPage.Condition);
