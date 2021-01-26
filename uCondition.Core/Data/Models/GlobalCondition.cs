@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Umbraco.Core.Persistence;
+﻿using NPoco;
+using System;
 using Umbraco.Core.Persistence.DatabaseAnnotations;
 
 namespace uCondition.Core.Data.Models
 {
-    [PrimaryKey("Id", autoIncrement = true)]
+    [PrimaryKey("Id", AutoIncrement = true)]
     [TableName("GlobalConditions")]
     public class GlobalCondition
     {
@@ -20,7 +16,7 @@ namespace uCondition.Core.Data.Models
         public string Guid { get; set; }
 
         [Column(Name = "Name")]
-        public string Name { get; set; } 
+        public string Name { get; set; }
 
         [Column(Name = "Data")]
         [SpecialDbType(SpecialDbTypes.NTEXT)]

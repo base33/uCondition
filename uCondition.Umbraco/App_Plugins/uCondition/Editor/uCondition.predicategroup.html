@@ -1,32 +1,25 @@
-﻿<div ng-controller="uCondition.PredicateGroup as Ctrl">
-
-    <!-- start of predicate groups repeater -->
-
+﻿<div ng-controller="uCondition.PredicateGroup as vm">
     <div class="predicateGroup" ng-class="{ 'predicate' : model.Type == 'Predicate' }">
         <div class="left"></div><div class="right"></div>
         <div ng-hide="model.Type == 'Predicate'" class="toolbar">
-            <i ng-click="Ctrl.RemoveCondition(container, model)" class="icon-trash"></i>
-            <!--<i ng-click="conditionList.UIViewState.EnableDeletePrompt = true" class="icon-trash"></i>-->
+            <i ng-click="vm.RemoveCondition(container, model)" class="icon-trash"></i>
         </div>
-        <!-- PREDICATE GROUP -->
-        <div ucondition-vertilize-container ucondition-vertical-centerize class="conditions" ng-if="model.Type == 'PredicateGroup'" ui-sortable="" ng-model="model.Conditions">
-            <!--ui-sortable="" ng-model="baseCondition.Conditions"-->
-            <ucondition-condition ucondition-vertilize ng-repeat="condition in model.Conditions" model="condition" container="model" modal-dialog="modalDialog" is-last="$last"></ucondition-condition>
 
+        <div ucondition-vertilize-container ucondition-vertical-centerize class="conditions" ng-if="model.Type == 'PredicateGroup'" ui-sortable="" ng-model="model.Conditions">
+            <ucondition-condition ucondition-vertilize ng-repeat="condition in model.Conditions" model="condition" container="model" is-last="$last"></ucondition-condition>
         </div>
         <div class="clear"></div>
         <div ng-show="model.Type == 'PredicateGroup'" class="condition add">
-            <div ng-click="Ctrl.AddPredicate(model.Conditions)">
+            <div ng-click="vm.AddPredicate(model.Conditions)">
                 <i class="icon-add"></i>
             </div>
         </div>
-        <!-- END OF PREDICATE GROUP -->
 
         <div ng-if="model.Type == 'Predicate'" class="conditions">
             <div>
-                <div class="conditionType" ng-click="Ctrl.EditPredicate(model)" ng-class="{ unconfigured: model.NeedsConfiguring }">
+                <div class="conditionType" ng-click="vm.EditPredicate(model)" ng-class="{ unconfigured: model.NeedsConfiguring }">
                     <div class="toolbar">
-                        <i ng-click="Ctrl.RemoveCondition(container, model)" class="icon-trash"></i>
+                        <i ng-click="vm.RemoveCondition(container, model)" class="icon-trash"></i>
                     </div>
                     <div class="name" ng-show="model.Missing"><span style="font-weight: normal;">Unable to find predicate</span> <br />Alias: {{model.Config.Name}}</div>
                     <div class="name" ng-hide="model.Missing">{{model.Invert == true ? "NOT " : ""}}{{model.Config.Name}}</div>
@@ -37,12 +30,10 @@
 
     </div>
 
-    <div ng-hide="isLast"  class="predicate-group-add condition and">
+    <div ng-hide="isLast" class="predicate-group-add condition and">
         <div ng-click="model.RightOperationAnd = !model.RightOperationAnd">
-            <i ng-show="model.RightOperationAnd" class="icon-add"></i><!---->
-            <i ng-hide="model.RightOperationAnd" class="icon-trafic"></i><!---->
+            <i ng-show="model.RightOperationAnd" class="icon-add"></i>
+            <i ng-hide="model.RightOperationAnd" class="icon-trafic"></i>
         </div>
     </div>
-    <!-- end of predicate groups repeater -->
-
 </div>

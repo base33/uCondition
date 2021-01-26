@@ -15,7 +15,6 @@ var uCondition;
                     //    predicateSyncService.SyncActions($scope.model.value.PredicateGroups[i].Actions);
                     //}
                     this.Model = this.$scope.model.value;
-                    this.ModalDialog = new uCondition.Editor.Models.ModalDialog();
                     var defaultConfig = new uCondition.Editor.Models.DataTypeConfig();
                     this.Config = $scope.model.config;
                     this.Config = angular.extend({}, defaultConfig, this.Config);
@@ -31,13 +30,15 @@ var uCondition;
                 return uConditionController;
             }());
             Controllers.uConditionController = uConditionController;
+
             var PredicateGroupController = (function () {
-                function PredicateGroupController($scope, $timeout, dialogService) {
+                function PredicateGroupController($scope, $timeout, editorService, navigationService) {
                     this.$scope = $scope;
                     this.$timeout = $timeout;
-                    this.dialogService = dialogService;
-                    this.ModalDialog = $scope.modalDialog;
+                    this.dialogService = editorService;
+                    this.navigationService = navigationService;
                 }
+
                 PredicateGroupController.prototype.GetConditionFieldSummary = function (condition) {
                     var summary = "";
                     for (var i = 0; i < condition.Values.length; i++) {
@@ -50,47 +51,65 @@ var uCondition;
                     summary = summary.substr(0, summary.length - 5);
                     return summary;
                 };
+
                 PredicateGroupController.prototype.AddPredicate = function (conditions) {
                     var _this = this;
-                    this.ModalDialog.title = "Add Predicate";
-                    this.ModalDialog.subtitle = "Choose the predicate you would like to add";
-                    this.ModalDialog.view = "/App_Plugins/uCondition/editor/dialogs/add/addcondition.html";
-                    this.ModalDialog.show = true;
-                    this.ModalDialog.submitButtonLabel = "Add Condition";
-                    this.ModalDialog.closeButtonLabel = "Cancel";
-                    this.ModalDialog.value = {};
-                    this.ModalDialog.submit = function (model) {
-                        for (var i = 0; i < model.value.length; i++) {
-                            conditions.push(model.value[i]);
+
+                    _this.navigationService.allowHideDialog(false);
+
+                    var addPredicateModalDialog = {
+                        title: "Add condition",
+                        view: "/App_Plugins/uCondition/editor/dialogs/add/addcondition.html",
+                        size: "medium",
+                        submit: function (model) {
+                            for (var i = 0; i < model.value.length; i++) {
+                                conditions.push(model.value[i]);
+                            }
+                            _this.dialogService.close();
+                            _this.navigationService.allowHideDialog(true);
+                            _this.EditManyConditions(model.value);
+                        },
+                        close: function () {
+                            _this.dialogService.close();
                         }
-                        _this.ModalDialog.show = false;
-                        _this.EditManyConditions(model.value);
                     };
+
+                    _this.dialogService.open(addPredicateModalDialog);
                 };
+
                 PredicateGroupController.prototype.EditPredicate = function (condition, callback) {
                     var _this = this;
                     if (callback === void 0) { callback = null; }
-                    this.ModalDialog.title = "Edit Predicate";
-                    this.ModalDialog.subtitle = condition.Config.Name;
-                    this.ModalDialog.view = "/app_plugins/ucondition/editor/dialogs/edit/ucondition.editcondition.html";
-                    this.ModalDialog.dialogData = condition;
-                    this.ModalDialog.submitButtonLabel = "Accept Changes";
-                    this.ModalDialog.closeButtonLabel = "Cancel";
-                    this.ModalDialog.value = {};
-                    this.ModalDialog.submit = function (model) {
-                        _this.ModalDialog.show = false;
-                        condition.NeedsConfiguring = false;
-                        if (callback != null)
-                            callback();
+
+                    _this.navigationService.allowHideDialog(false);
+
+                    var editPredicateModalDialog = {
+                        title: "Edit condition",
+                        view: "/App_Plugins/uCondition/editor/dialogs/edit/editcondition.html",
+                        size: "medium",
+                        dialogData: condition,
+                        submit: function (model) {
+                            condition.NeedsConfiguring = false;
+
+                            for (var i = 0; i < model.value.length; i++) {
+                                conditions.push(model.value[i]);
+                            }
+
+                            _this.dialogService.close();
+                            _this.navigationService.allowHideDialog(true);
+
+                            if (callback != null)
+                                callback();
+                        },
+                        close: function () {
+                            _this.dialogService.close();
+                        }
                     };
-                    this.ModalDialog.show = true;
+
+                    _this.dialogService.open(editPredicateModalDialog);
                 };
-                /**
-                 * loop through and show edit dialog for each condition that needs configuring
-                 * @param conditions conditions to edit
-                 */
+
                 PredicateGroupController.prototype.EditManyConditions = function (conditions) {
-                    //shallow clone the array to make sure it doesn't change while running through it
                     var conditionsToProcess = conditions.splice(0);
                     var index = 0;
                     var that = this;
@@ -109,6 +128,7 @@ var uCondition;
                         }, 200);
                     }
                 };
+
                 PredicateGroupController.prototype.RemoveCondition = function (container, conditionToRemove) {
                     var index = -1;
                     for (var i = 0; i < container.Conditions.length; i++) {
@@ -120,6 +140,7 @@ var uCondition;
                     if (index != -1)
                         container.Conditions.splice(index, 1);
                 };
+
                 PredicateGroupController.prototype.RemoveSwimlane = function (container, predicateToRemove) {
                     if (!confirm("Are you sure you want to delete this expression?"))
                         return;
@@ -136,56 +157,70 @@ var uCondition;
                 return PredicateGroupController;
             }());
             Controllers.PredicateGroupController = PredicateGroupController;
+
             var EditConditionDialog = (function () {
                 function EditConditionDialog($scope, uConditionApiService) {
                     this.$scope = $scope;
                     this.uConditionApiService = uConditionApiService;
                     this.Fields = this.GetFields($scope.model.dialogData);
                     var that = this;
-                    $scope.$on("formSubmitted", function () {
-                        for (var i = 0; i < that.Fields.length; i++) {
-                            for (var k = 0; k < $scope.model.dialogData.Values.length; k++) {
-                                if (that.Fields[i].PropertyEditorModel.alias == $scope.model.dialogData.Values[k].Alias) {
-                                    $scope.model.dialogData.Values[k].Value = that.Fields[i].PropertyEditorModel.value;
-                                    //resolve display value
-                                    var valueType = that.GetConfigPropertyByAlias(that.Fields[i].PropertyEditorModel.alias, $scope.model.dialogData.Config.Fields).ValueType;
-                                    if (valueType != Editor.Models.EditablePropertyDisplayMode.Standard) {
-                                        if (valueType == Editor.Models.EditablePropertyDisplayMode.Standard) {
-                                            $scope.model.dialogData.Values[k].DisplayValue = "";
-                                        }
-                                        if (valueType == Editor.Models.EditablePropertyDisplayMode.Hidden) {
-                                            $scope.model.dialogData.Values[k].DisplayValue = "Set";
-                                        }
-                                        else if (valueType == Editor.Models.EditablePropertyDisplayMode.IsBoolean) {
-                                            $scope.model.dialogData.Values[k].DisplayValue = that.Fields[i].PropertyEditorModel.value == "1" ? "True" : "False";
-                                        }
-                                        else if (valueType == Editor.Models.EditablePropertyDisplayMode.IsPreValue) {
-                                            var fieldWrapper = that.GetFieldWrapperByAlias(that.Fields[i].PropertyEditorModel.alias, that.Fields);
-                                            //TODO: here, the value is an index - need to get the value from prevalues list
-                                            //if its a multivalue list of prevalues
-                                            if (fieldWrapper.PropertyEditorModel.config.items) {
+
+                    $scope.submit = function () {
+                        if ($scope.model.submit) {
+                            $scope.model.value = [];
+
+                            for (var i = 0; i < that.Fields.length; i++) {
+                                for (var k = 0; k < $scope.model.dialogData.Values.length; k++) {
+                                    if (that.Fields[i].PropertyEditorModel.alias == $scope.model.dialogData.Values[k].Alias) {
+                                        $scope.model.dialogData.Values[k].Value = that.Fields[i].PropertyEditorModel.value;
+                                        //resolve display value
+                                        var valueType = that.GetConfigPropertyByAlias(that.Fields[i].PropertyEditorModel.alias, $scope.model.dialogData.Config.Fields).ValueType;
+                                        if (valueType != Editor.Models.EditablePropertyDisplayMode.Standard) {
+                                            if (valueType == Editor.Models.EditablePropertyDisplayMode.Standard) {
                                                 $scope.model.dialogData.Values[k].DisplayValue = "";
-                                                if (Array.isArray(that.Fields[i].PropertyEditorModel.value)) {
-                                                    for (var j = 0; j < that.Fields[i].PropertyEditorModel.value.length; j++) {
-                                                        $scope.model.dialogData.Values[k].DisplayValue += that.GetMultiValueNameById(that.Fields[i].PropertyEditorModel.value[j], fieldWrapper.PropertyEditorModel.config.items) + ", ";
+                                            }
+                                            if (valueType == Editor.Models.EditablePropertyDisplayMode.Hidden) {
+                                                $scope.model.dialogData.Values[k].DisplayValue = "Set";
+                                            }
+                                            else if (valueType == Editor.Models.EditablePropertyDisplayMode.IsBoolean) {
+                                                $scope.model.dialogData.Values[k].DisplayValue = that.Fields[i].PropertyEditorModel.value == "1" ? "True" : "False";
+                                            }
+                                            else if (valueType == Editor.Models.EditablePropertyDisplayMode.IsPreValue) {
+                                                var fieldWrapper = that.GetFieldWrapperByAlias(that.Fields[i].PropertyEditorModel.alias, that.Fields);
+                                                //TODO: here, the value is an index - need to get the value from prevalues list
+                                                //if its a multivalue list of prevalues
+                                                if (fieldWrapper.PropertyEditorModel.config.items) {
+                                                    $scope.model.dialogData.Values[k].DisplayValue = "";
+                                                    if (Array.isArray(that.Fields[i].PropertyEditorModel.value)) {
+                                                        for (var j = 0; j < that.Fields[i].PropertyEditorModel.value.length; j++) {
+                                                            $scope.model.dialogData.Values[k].DisplayValue += that.GetMultiValueNameById(that.Fields[i].PropertyEditorModel.value[j], fieldWrapper.PropertyEditorModel.config.items) + ", ";
+                                                        }
+                                                        $scope.model.dialogData.Values[k].DisplayValue = $scope.model.dialogData.Values[k].DisplayValue.substr(0, $scope.model.dialogData.Values[k].DisplayValue.length - 2);
                                                     }
-                                                    $scope.model.dialogData.Values[k].DisplayValue = $scope.model.dialogData.Values[k].DisplayValue.substr(0, $scope.model.dialogData.Values[k].DisplayValue.length - 2);
+                                                    else {
+                                                        //its a value
+                                                        $scope.model.dialogData.Values[k].DisplayValue += that.GetMultiValueNameById(that.Fields[i].PropertyEditorModel.value, fieldWrapper.PropertyEditorModel.config.items);
+                                                    }
                                                 }
                                                 else {
-                                                    //its a value
-                                                    $scope.model.dialogData.Values[k].DisplayValue += that.GetMultiValueNameById(that.Fields[i].PropertyEditorModel.value, fieldWrapper.PropertyEditorModel.config.items);
                                                 }
-                                            }
-                                            else {
                                             }
                                         }
                                     }
                                 }
                             }
+
+                            $scope.model.submit($scope.model);
                         }
-                        ;
-                    });
+                    };
+
+                    $scope.close = function () {
+                        if ($scope.model.close) {
+                            $scope.model.close();
+                        }
+                    };
                 }
+
                 EditConditionDialog.prototype.GetFields = function (condition) {
                     var fields = new Array();
                     //for each field in the editable fields for this condition
@@ -204,35 +239,37 @@ var uCondition;
                             condition.Values.push(fieldValue);
                         }
                         this.uConditionApiService.GetPropertyEditorByName(currentField.Control)
-                            .success((function (field, value, index) {
-                            return function (dataType) {
-                                //add the field wrapper, which holds the property editor model and the name for display
-                                var fieldWrapper = {
-                                    Name: field.Name,
-                                    Alias: field.Alias,
-                                    PropertyEditorModel: {},
-                                    SortOrder: index,
+                            .then(dataType => dataType.data)
+                            .then((function (field, value, index) {
+                                return function (dataType) {
+                                    //add the field wrapper, which holds the property editor model and the name for display
+                                    var fieldWrapper = {
+                                        Name: field.Name,
+                                        Alias: field.Alias,
+                                        PropertyEditorModel: {},
+                                        SortOrder: index,
+                                    };
+                                    if (dataType == "null") {
+                                        fieldWrapper.PropertyEditorModel.view = field.Control;
+                                        fieldWrapper.PropertyEditorModel.alias = field.Alias;
+                                        fieldWrapper.PropertyEditorModel.value = value.Value;
+                                        fieldWrapper.PropertyEditorModel.preview = false;
+                                        fields.push(fieldWrapper);
+                                    }
+                                    else {
+                                        fieldWrapper.PropertyEditorModel.view = dataType.view;
+                                        fieldWrapper.PropertyEditorModel.alias = field.Alias;
+                                        fieldWrapper.PropertyEditorModel.value = value.Value;
+                                        fieldWrapper.PropertyEditorModel.preview = false;
+                                        fieldWrapper.PropertyEditorModel.config = dataType.prevalues;
+                                        fields.push(fieldWrapper);
+                                    }
                                 };
-                                if (dataType == "null") {
-                                    fieldWrapper.PropertyEditorModel.view = field.Control;
-                                    fieldWrapper.PropertyEditorModel.alias = field.Alias;
-                                    fieldWrapper.PropertyEditorModel.value = value.Value;
-                                    fieldWrapper.PropertyEditorModel.preview = false;
-                                    fields.push(fieldWrapper);
-                                }
-                                else {
-                                    fieldWrapper.PropertyEditorModel.view = dataType.view;
-                                    fieldWrapper.PropertyEditorModel.alias = field.Alias;
-                                    fieldWrapper.PropertyEditorModel.value = value.Value;
-                                    fieldWrapper.PropertyEditorModel.preview = false;
-                                    fieldWrapper.PropertyEditorModel.config = dataType.prevalues;
-                                    fields.push(fieldWrapper);
-                                }
-                            };
-                        })(currentField, fieldValue, i));
+                            })(currentField, fieldValue, i));
                     }
                     return fields;
                 };
+
                 EditConditionDialog.prototype.GetFieldValueByAlias = function (alias, values) {
                     for (var i = 0; i < values.length; i++) {
                         if (values[i].Alias == alias)
@@ -240,6 +277,7 @@ var uCondition;
                     }
                     return null;
                 };
+
                 EditConditionDialog.prototype.GetConfigPropertyByAlias = function (alias, values) {
                     for (var i = 0; i < values.length; i++) {
                         if (values[i].Alias == alias)
@@ -247,6 +285,7 @@ var uCondition;
                     }
                     return null;
                 };
+
                 EditConditionDialog.prototype.GetFieldWrapperByAlias = function (alias, fieldWrappers) {
                     for (var i = 0; i < fieldWrappers.length; i++) {
                         if (fieldWrappers[i].Alias == alias)
@@ -254,6 +293,7 @@ var uCondition;
                     }
                     return null;
                 };
+
                 EditConditionDialog.prototype.GetMultiValueNameById = function (id, items) {
                     for (var i = 0; i < items.length; i++) {
                         if (items[i].id == id)
@@ -261,51 +301,67 @@ var uCondition;
                     }
                     return null;
                 };
+
                 return EditConditionDialog;
             }());
             Controllers.EditConditionDialog = EditConditionDialog;
+
             var AddConditionDialog = (function () {
-                function AddConditionDialog($scope, uConditionApiService) {
+                function AddConditionDialog($scope, editorService, navigationService, uConditionApiService) {
                     this.$scope = $scope;
+                    this.dialogService = editorService;
+                    this.navigationService = navigationService;
                     this.uConditionApiService = uConditionApiService;
+
                     var that = this;
                     $scope.filterGroup = "All";
-                    uConditionApiService.GetPredicates().success(function (predicateConfigs) {
-                        var groups = {};
-                        groups["Special"] = [new uCondition.Editor.Models.PredicateGroup()];
-                        for (var i = 0; i < predicateConfigs.length; i++) {
-                            if (typeof groups[predicateConfigs[i].Category] == "undefined")
-                                groups[predicateConfigs[i].Category] = [];
-                            var predicate = new uCondition.Editor.Models.Predicate();
-                            predicate.Config = predicateConfigs[i];
-                            groups[predicateConfigs[i].Category].push(predicate);
-                        }
-                        that.$scope.groups = [];
-                        for (var group in groups) {
-                            var predicateGroup = new uCondition.Editor.Models.Dialogs.ConditionGroup();
-                            predicateGroup.Name = group;
-                            for (var i = 0; i < groups[group].length; i++) {
-                                var predicateOption = new uCondition.Editor.Models.Dialogs.ConditionOption();
-                                predicateOption.Condition = groups[group][i];
-                                predicateGroup.Conditions.push(predicateOption);
+
+                    uConditionApiService.GetPredicates()
+                        .then(predicateConfigs => predicateConfigs.data)
+                        .then(predicateConfigs => {
+                            var groups = {};
+                            groups["Special"] = [new uCondition.Editor.Models.PredicateGroup()];
+
+                            for (var i = 0; i < predicateConfigs.length; i++) {
+                                if (typeof groups[predicateConfigs[i].Category] === "undefined")
+                                    groups[predicateConfigs[i].Category] = [];
+
+                                var predicate = new uCondition.Editor.Models.Predicate();
+
+                                predicate.Config = predicateConfigs[i];
+                                groups[predicateConfigs[i].Category].push(predicate);
                             }
-                            that.$scope.groups.push(predicateGroup);
-                        }
-                        that.$scope.groups.sort(function (a, b) {
-                            if (a.Name == "Special")
-                                return -2;
-                            if (a.Name < b.Name)
-                                return -1;
-                            if (a.Name > b.Name)
-                                return 1;
-                            return 0;
+
+                            that.$scope.groups = [];
+
+                            for (var group in groups) {
+                                var predicateGroup = new uCondition.Editor.Models.Dialogs.ConditionGroup();
+                                predicateGroup.Name = group;
+                                for (var i = 0; i < groups[group].length; i++) {
+                                    var predicateOption = new uCondition.Editor.Models.Dialogs.ConditionOption();
+                                    predicateOption.Condition = groups[group][i];
+                                    predicateGroup.Conditions.push(predicateOption);
+                                }
+                                that.$scope.groups.push(predicateGroup);
+                            }
+
+                            that.$scope.groups.sort(function (a, b) {
+                                if (a.Name == "Special")
+                                    return -2;
+                                if (a.Name < b.Name)
+                                    return -1;
+                                if (a.Name > b.Name)
+                                    return 1;
+                                return 0;
+                            });
                         });
-                    });
+
                     $scope.FilterGroups = function (groupName) {
                         for (var i = 0; i < $scope.groups.length; i++) {
                             $scope.groups[i].Show = $scope.groups[i].Name == groupName || groupName == "All";
                         }
                     };
+
                     $scope.FilterAllByText = function (text) {
                         text = text.toLowerCase();
                         for (var i = 0; i < $scope.groups.length; i++) {
@@ -319,54 +375,70 @@ var uCondition;
                                 $scope.groups[i].Show = showCount > 0;
                         }
                     };
-                    this.$scope.$on("formSubmitting", function () {
-                        $scope.model.value = [];
-                        for (var i = 0; i < $scope.groups.length; i++) {
-                            for (var k = 0; k < $scope.groups[i].Conditions.length; k++) {
-                                if ($scope.groups[i].Conditions[k].Selected) {
-                                    if ($scope.groups[i].Conditions[k].Condition.Type == "Predicate")
-                                        $scope.groups[i].Conditions[k].Condition.NeedsConfiguring = $scope.groups[i].Conditions[k].Condition.Config.Fields.length > 0;
-                                    $scope.model.value.push($scope.groups[i].Conditions[k].Condition);
+
+                    $scope.submit = function () {
+                        if ($scope.model.submit) {
+                            $scope.model.value = [];
+                            for (var i = 0; i < $scope.groups.length; i++) {
+                                for (var k = 0; k < $scope.groups[i].Conditions.length; k++) {
+                                    if ($scope.groups[i].Conditions[k].Selected) {
+                                        if ($scope.groups[i].Conditions[k].Condition.Type == "Predicate")
+                                            $scope.groups[i].Conditions[k].Condition.NeedsConfiguring = $scope.groups[i].Conditions[k].Condition.Config.Fields.length > 0;
+                                        $scope.model.value.push($scope.groups[i].Conditions[k].Condition);
+                                    }
                                 }
                             }
+
+                            $scope.model.submit($scope.model);
                         }
-                    });
+                    };
+
+                    $scope.close = function () {
+                        if ($scope.model.close) {
+                            $scope.model.close();
+                        }
+                    };
                 }
                 return AddConditionDialog;
             }());
             Controllers.AddConditionDialog = AddConditionDialog;
+
             var AddActionDialog = (function () {
                 function AddActionDialog($scope, uConditionApiService) {
                     this.$scope = $scope;
                     this.uConditionApiService = uConditionApiService;
                     var that = this;
                     $scope.filterGroup = "All";
-                    uConditionApiService.GetActions().success(function (predicateConfigs) {
-                        var groups = {};
-                        for (var i = 0; i < predicateConfigs.length; i++) {
-                            if (typeof groups[predicateConfigs[i].Category] == "undefined")
-                                groups[predicateConfigs[i].Category] = [];
-                            var predicate = new uCondition.Editor.Models.Action();
-                            predicate.Config = predicateConfigs[i];
-                            groups[predicateConfigs[i].Category].push(predicate);
-                        }
-                        that.$scope.groups = [];
-                        for (var group in groups) {
-                            var predicateGroup = new uCondition.Editor.Models.Dialogs.ConditionGroup();
-                            predicateGroup.Name = group;
-                            for (var i = 0; i < groups[group].length; i++) {
-                                var predicateOption = new uCondition.Editor.Models.Dialogs.ConditionOption();
-                                predicateOption.Condition = groups[group][i];
-                                predicateGroup.Conditions.push(predicateOption);
+
+                    uConditionApiService.GetActions()
+                        .then(function (predicateConfigs) {
+                            var groups = {};
+                            for (var i = 0; i < predicateConfigs.length; i++) {
+                                if (typeof groups[predicateConfigs[i].Category] == "undefined")
+                                    groups[predicateConfigs[i].Category] = [];
+                                var predicate = new uCondition.Editor.Models.Action();
+                                predicate.Config = predicateConfigs[i];
+                                groups[predicateConfigs[i].Category].push(predicate);
                             }
-                            that.$scope.groups.push(predicateGroup);
-                        }
-                    });
+                            that.$scope.groups = [];
+                            for (var group in groups) {
+                                var predicateGroup = new uCondition.Editor.Models.Dialogs.ConditionGroup();
+                                predicateGroup.Name = group;
+                                for (var i = 0; i < groups[group].length; i++) {
+                                    var predicateOption = new uCondition.Editor.Models.Dialogs.ConditionOption();
+                                    predicateOption.Condition = groups[group][i];
+                                    predicateGroup.Conditions.push(predicateOption);
+                                }
+                                that.$scope.groups.push(predicateGroup);
+                            }
+                        });
+
                     $scope.FilterGroups = function (groupName) {
                         for (var i = 0; i < $scope.groups.length; i++) {
                             $scope.groups[i].Show = $scope.groups[i].Name == groupName || groupName == "All";
                         }
                     };
+
                     $scope.FilterAllByText = function (text) {
                         text = text.toLowerCase();
                         for (var i = 0; i < $scope.groups.length; i++) {
@@ -380,6 +452,7 @@ var uCondition;
                                 $scope.groups[i].Show = showCount > 0;
                         }
                     };
+
                     this.$scope.$on("formSubmitting", function () {
                         $scope.model.value = [];
                         for (var i = 0; i < $scope.groups.length; i++) {

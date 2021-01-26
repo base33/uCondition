@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28307.645
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30523.141
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "uCondition.Interfaces", "uCondition.Interfaces\uCondition.Interfaces.csproj", "{4FDCE4EB-58C0-48F2-9F70-CB66BA6A4AA5}"
 EndProject
@@ -17,11 +17,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "uCondition.Core.Models", "u
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "uCondition.Core.Interfaces", "uCondition.Core.Interfaces\uCondition.Core.Interfaces.csproj", "{0D92F0A5-0AEC-4BCE-868D-D0ABCE21AE1A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "uCondition.Umbraco", "uCondition.Umbraco\uCondition.Umbraco.csproj", "{59971A4B-B70B-419E-8FBD-5746EE44B3F3}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Extensions", "Extensions", "{12445E24-41C9-4AA8-BC12-E7197B0B9531}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "uCondition.ConditionalPublicAccess", "uCondition.ConditionalPublicAccess\uCondition.ConditionalPublicAccess.csproj", "{4739BAD7-9FCF-4E74-9C68-FC82F7AA20C4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "uCondition.Umbraco", "uCondition.Umbraco\uCondition.Umbraco.csproj", "{774AAA01-9E11-4D93-B50A-66635F21D8EA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "uCondition.Predicates.Demo", "uCondition.Predicates.Demo\uCondition.Predicates.Demo.csproj", "{7541D942-5845-45AB-8CB7-0EC599594F0A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -57,14 +59,18 @@ Global
 		{0D92F0A5-0AEC-4BCE-868D-D0ABCE21AE1A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0D92F0A5-0AEC-4BCE-868D-D0ABCE21AE1A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0D92F0A5-0AEC-4BCE-868D-D0ABCE21AE1A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{59971A4B-B70B-419E-8FBD-5746EE44B3F3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{59971A4B-B70B-419E-8FBD-5746EE44B3F3}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{59971A4B-B70B-419E-8FBD-5746EE44B3F3}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{59971A4B-B70B-419E-8FBD-5746EE44B3F3}.Release|Any CPU.Build.0 = Release|Any CPU
 		{4739BAD7-9FCF-4E74-9C68-FC82F7AA20C4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{4739BAD7-9FCF-4E74-9C68-FC82F7AA20C4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4739BAD7-9FCF-4E74-9C68-FC82F7AA20C4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4739BAD7-9FCF-4E74-9C68-FC82F7AA20C4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{774AAA01-9E11-4D93-B50A-66635F21D8EA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{774AAA01-9E11-4D93-B50A-66635F21D8EA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{774AAA01-9E11-4D93-B50A-66635F21D8EA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{774AAA01-9E11-4D93-B50A-66635F21D8EA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7541D942-5845-45AB-8CB7-0EC599594F0A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7541D942-5845-45AB-8CB7-0EC599594F0A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7541D942-5845-45AB-8CB7-0EC599594F0A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7541D942-5845-45AB-8CB7-0EC599594F0A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

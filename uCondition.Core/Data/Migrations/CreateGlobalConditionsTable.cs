@@ -1,31 +1,23 @@
-﻿using System.Linq;
-using Umbraco.Core.Configuration;
+﻿using uCondition.Core.Data.Models;
 using Umbraco.Core.Logging;
-using Umbraco.Core.Models.Rdbms;
-using Umbraco.Core.Persistence.SqlSyntax;
+using Umbraco.Core.Migrations;
 
-namespace uCondition.Core.Data.Models.Migrations
+namespace uCondition.Core.Data.Migrations
 {
-    [Migration("1.0.4", 1, "uCondition")]
     public class CreateGlobalConditionsTable : MigrationBase
     {
-        private readonly UmbracoDatabase _database = ApplicationContext.Current.DatabaseContext.Database;
-        private readonly DatabaseSchemaHelper _schemaHelper;
-
-        public CreateGlobalConditionsTable(ISqlSyntaxProvider sqlSyntax, ILogger logger)
-          : base(sqlSyntax, logger)
+        public CreateGlobalConditionsTable(IMigrationContext context) : base(context)
         {
-            _schemaHelper = new DatabaseSchemaHelper(_database, logger, sqlSyntax);
         }
 
-        public override void Up()
+        public override void Migrate()
         {
-            _schemaHelper.CreateTable<GlobalCondition>(true);
-        }
+            Logger.Debug<CreateGlobalConditionsTable>("Running migration: {MigrationStep}", "CreateGlobalConditionsTable");
 
-        public override void Down()
-        {
-            _schemaHelper.DropTable<GlobalCondition>();
+            if (TableExists("GlobalConditions") == false)
+            {
+                Create.Table<GlobalCondition>().Do();
+            }
         }
     }
 }

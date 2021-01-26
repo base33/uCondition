@@ -1,72 +1,59 @@
-﻿<div ng-controller="uCondition.Dialogs.AddAction" class="uCondition_AddCondition">
+﻿<div ng-controller="uCondition.Dialogs.AddAction">
+    <umb-editor-view>
+        <umb-editor-header name="model.title"
+                           name-locked="true"
+                           hide-alias="true"
+                           hide-icon="true"
+                           hide-description="true">
+        </umb-editor-header>
 
-    <div class="form-horizontal">
-        <div class="umb-el-wrap">
-            <label class="control-label">Filter by type: </label>
-            <select id="repeatSelect" ng-model="filterGroup" ng-change="FilterGroups(filterGroup)">
-                <option value="All">All</option>
-                <option ng-repeat="group in groups" value="{{group.Name}}">{{group.Name}}</option>
-            </select>
-        </div>
-        <div class="umb-el-wrap">
-            <label class="control-label">Search: </label>
-            <input type="text" placeholder="Search..." ng-model="searchText" ng-change="FilterAllByText(searchText)" />
-        </div>
-    </div>
+        <umb-editor-container>
+            <umb-box>
+                <umb-box-content>
+                    <div class="form-horizontal">
+                        <div class="umb-el-wrap">
+                            <label class="control-label">Filter by type: </label>
+                            <select id="repeatSelect" ng-model="filterGroup" ng-change="FilterGroups(filterGroup)">
+                                <option value="All">All</option>
+                                <option ng-repeat="group in groups" value="{{group.Name}}">{{group.Name}}</option>
+                            </select>
+                        </div>
+                        <div class="umb-el-wrap">
+                            <label class="control-label">Search: </label>
+                            <input type="text" placeholder="Search..." ng-model="searchText" ng-change="FilterAllByText(searchText)" />
+                        </div>
+                    </div>
 
-    <div class="group" ng-repeat="group in groups" ng-show="group.Show">
-        <div class="group-title">{{group.Name}}</div>
-        <div class="group-options">
-            <ul>
-                <li ng-show="option.Show" ng-repeat="option in group.Conditions" ng-click="option.Selected = !option.Selected">
-                    <div><i class="{{option.Condition.Config.Icon}}"></i></div>
-                    <div>{{option.Condition.Config.Name}}</div>
-                    <i ng-show="option.Selected" class="icon-check" style="color: green;"></i>
-                </li>
-            </ul>
-        </div>
-    </div>
+                    <div class="group" ng-repeat="group in groups" ng-show="group.Show">
+                        <div class="group-title">{{group.Name}}</div>
+                        <div class="group-options">
+                            <ul>
+                                <li ng-show="option.Show" ng-repeat="option in group.Conditions" ng-click="option.Selected = !option.Selected">
+                                    <div><i class="{{option.Condition.Config.Icon}}"></i></div>
+                                    <div>{{option.Condition.Config.Name}}</div>
+                                    <i ng-show="option.Selected" class="icon-check" style="color: green;"></i>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </umb-box-content>
+            </umb-box>
+        </umb-editor-container>
 
+        <umb-editor-footer>
+            <umb-editor-footer-content-right>
+                <umb-button type="button"
+                            button-style="link"
+                            label-key="general_cancel"
+                            shortcut="esc"
+                            action="close()">
+                </umb-button>
+                <umb-button type="button"
+                            button-style="action"
+                            label="Add condition"
+                            action="submit(model)">
+                </umb-button>
+            </umb-editor-footer-content-right>
+        </umb-editor-footer>
+    </umb-editor-view>
 </div>
-
-<style type="text/css">
-    .uCondition_AddCondition > .form-horizontal > .umb-el-wrap > .control-label {
-        display: inline-block;
-        float: left;
-        width: 160px !important;
-    }
-
-    .uCondition_AddCondition > .form-horizontal > .umb-el-wrap {
-        margin-bottom: 5px;
-    }
-
-    .group .group-title {
-        border-bottom: 1px solid #d4d4d4;
-        font-size: 14pt;
-        padding-bottom: 5px;
-        padding-top: 10px;
-    }
-
-    .group .group-options ul {
-        list-style: none;
-        margin: 0;
-    }
-
-        .group .group-options ul li {
-            padding: 5px;
-            background: #f8f8f8;
-            border-bottom: 1px solid #d4d4d4;
-        }
-
-            .group .group-options ul li > div {
-                display: inline-block;
-            }
-
-            .group .group-options ul li:hover {
-                background: #fbfbfb;
-            }
-
-            .group .group-options ul li:last-child {
-                border-color: #828181;
-            }
-</style>

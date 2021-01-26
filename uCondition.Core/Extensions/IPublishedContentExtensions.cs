@@ -1,4 +1,6 @@
 ﻿using System.Linq;
+using System.Web.Mvc;
+using uCondition.Core.Interfaces;
 using uCondition.Core.Models.Converter;
 using uCondition.ExpressionEngine;
 using Umbraco.Core.Models.PublishedContent;
@@ -17,11 +19,12 @@ namespace uCondition.Core.Extensions
 
             if (model.PredicateGroups.Count >= 1 && model.PredicateGroups.First().Conditions.Any())
             {
+                var predicateManager = DependencyResolver.Current.GetService<IPredicateManager>();
 
                 foreach (var swimlane in model.PredicateGroups)
                 {
                     var compiler = new ExpressionCompiler();
-                    var expressionTree = compiler.Compile(swimlane, new PredicateManager());
+                    var expressionTree = compiler.Compile(swimlane, predicateManager);
                     var analyser = new ExpressionAnalyser();
                     var result = analyser.Analyse(expressionTree);
 

@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using uCondition.Interfaces;
-using Umbraco.Core.Models;
+using Umbraco.Core.Models.PublishedContent;
 
 namespace uCondition.Models
 {
@@ -24,8 +20,8 @@ namespace uCondition.Models
 
         public T GetValue<T>(string fieldName)
         {
-            return Umbraco.Web.PublishedPropertyExtension.GetValue<T>(new uConditionPublishedProperty(fieldName, Values[fieldName]), default(T));
-            //(T)Convert.ChangeType(Values[fieldName], typeof(T));
+            return Umbraco.Web.PublishedPropertyExtension.Value<T>(
+                new uConditionPublishedProperty(fieldName, Values[fieldName]));
         }
 
         public bool TryGetValue<T>(string fieldName, out T value)
@@ -52,44 +48,27 @@ namespace uCondition.Models
             this.value = value;
         }
 
-        public object DataValue
-        {
-            get
-            {
-                return value;
-            }
-        }
+        public object DataValue => value;
 
-        public bool HasValue
-        {
-            get
-            {
-                return value != null;
-            }
-        }
+        /// <summary>
+        /// Deprecated
+        /// </summary>
+        public string PropertyTypeAlias => name;
 
-        public string PropertyTypeAlias
-        {
-            get
-            {
-                return name;
-            }
-        }
+        public object Value => value;
 
-        public object Value
-        {
-            get
-            {
-                return value;
-            }
-        }
+        public object XPathValue => value;
 
-        public object XPathValue
-        {
-            get
-            {
-                return value;
-            }
-        }
+        public IPublishedPropertyType PropertyType => throw new System.NotImplementedException();
+
+        public string Alias => name;
+
+        bool IPublishedProperty.HasValue(string culture, string segment) => value != null;
+
+        public object GetSourceValue(string culture = null, string segment = null) => value;
+
+        public object GetValue(string culture = null, string segment = null) => value;
+
+        public object GetXPathValue(string culture = null, string segment = null) => value;
     }
 }

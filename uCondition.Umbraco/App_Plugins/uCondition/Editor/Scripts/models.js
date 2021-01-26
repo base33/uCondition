@@ -86,23 +86,6 @@ var uCondition;
                 return EditablePropertyDisplayMode;
             }());
             Models.EditablePropertyDisplayMode = EditablePropertyDisplayMode;
-            var ModalDialog = (function () {
-                function ModalDialog() {
-                    this.title = "";
-                    this.subtitle = "";
-                    this.view = "";
-                    this.show = false;
-                    this.filter = false;
-                    this.event = function () { };
-                    this.submit = function (model) { };
-                    this.submitButtonLabel = "";
-                    this.closeButtonLabel = "";
-                    this.dialogData = {};
-                    this.value = {};
-                }
-                return ModalDialog;
-            }());
-            Models.ModalDialog = ModalDialog;
         })(Models = Editor.Models || (Editor.Models = {}));
     })(Editor = uCondition.Editor || (uCondition.Editor = {}));
 })(uCondition || (uCondition = {}));

@@ -1,13 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
+using System.Web.Mvc;
 using uCondition.ConditionalPublicAccess.Data;
-using uCondition.Core;
 using uCondition.Core.Interfaces;
-using uCondition.Core.Models;
 using uCondition.Core.Models.Converter;
 using uCondition.ExpressionEngine;
-using Umbraco.Core.Models;
+using Umbraco.Core.Models.PublishedContent;
 
 namespace uCondition.ConditionalPublicAccess.Helpers
 {
@@ -15,35 +13,48 @@ namespace uCondition.ConditionalPublicAccess.Helpers
     {
         public static bool HasAccess(string path)
         {
-            var protectedPage = new ProtectedPageProvider().LoadForPath(path.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Select(c => int.Parse(c)));
+            var protectedPage = new ProtectedPageProvider()
+                .LoadForPath(
+                    path.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
+                        .Select(c => int.Parse(c))
+                        .ToList());
+
             return protectedPage == null || HasAccess(protectedPage);
         }
 
         public static bool HasAccess(IPublishedContent content)
         {
-            var protectedPage = new ProtectedPageProvider().LoadForPath(content.Path.Split(new [] { ',' }, StringSplitOptions.RemoveEmptyEntries).Select(c => int.Parse(c)));
+            var protectedPage = new ProtectedPageProvider()
+                .LoadForPath(
+                    content.Path
+                        .Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
+                        .Select(c => int.Parse(c))
+                        .ToList());
+
             return protectedPage == null || HasAccess(protectedPage);
         }
 
         public static bool HasAccess(ProtectedPage protectedPage)
         {
-            return protectedPage == null || ConditionalAccess.TestCondition(protectedPage.Condition);
+            return protectedPage == null || TestCondition(protectedPage.Condition);
         }
 
         public static bool HasAccess(ProtectedPageCondition protectedPage)
         {
-            return protectedPage == null || ConditionalAccess.TestCondition(protectedPage.Condition);
+            return protectedPage == null || TestCondition(protectedPage.Condition);
         }
 
         public static bool TestCondition(string json)
         {
-            uConditionModel uConditionModel = new uConditionModelConverter().Convert(json);
-            bool flag = false;
+            var uConditionModel = new uConditionModelConverter().Convert(json);
+            var flag = false;
+
             if (uConditionModel.PredicateGroups.Count >= 1 && uConditionModel.PredicateGroups.First().Conditions.Any())
             {
                 var expressionAnalyser = new ExpressionAnalyser();
                 var expressionCompiler = new ExpressionCompiler();
-                var predicateManager = new PredicateManager();
+
+                var predicateManager = DependencyResolver.Current.GetService<IPredicateManager>();
 
                 foreach (var swimlane in uConditionModel.PredicateGroups)
                 {
@@ -51,6 +62,7 @@ namespace uCondition.ConditionalPublicAccess.Helpers
                     flag = expressionAnalyser.Analyse(compiledExpression) || flag;
                 }
             }
+
             return flag;
         }
     }
