@@ -1,21 +1,48 @@
-﻿using System;
+﻿using NPoco;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using uCondition.Core.Data.Models;
-using Umbraco.Core;
+using Umbraco.Core.Logging;
 using Umbraco.Core.Persistence;
+using Umbraco.Core.Persistence.SqlSyntax;
+using Umbraco.Core.Scoping;
 
 namespace uCondition.Core.Data
 {
-    public class RegisteredPredicateRepository
+    public interface IRegisteredPredicateRepository
     {
-        protected UmbracoDatabase Database;
+        void Delete(int id);
+        IEnumerable<RegisteredPredicate> GetAll();
+        RegisteredPredicate GetSingle(int id);
+        int Insert(RegisteredPredicate registeredCondition);
+        void Update(RegisteredPredicate registeredCondition);
+    }
 
-        public RegisteredPredicateRepository()
+    public class RegisteredPredicateRepository : IRegisteredPredicateRepository
+    {
+        protected readonly IScopeAccessor scopeAccessor;
+        protected readonly IProfilingLogger logger;
+        protected IScope AmbientScope
         {
-            Database = ApplicationContext.Current.DatabaseContext.Database;
+            get
+            {
+                var scope = scopeAccessor.AmbientScope;
+                if (scope == null)
+                    throw new InvalidOperationException("Cannot run repository without an ambient scope");
+
+                return scope;
+            }
+        }
+        protected IUmbracoDatabase Database => AmbientScope.Database;
+        protected ISqlContext SqlContext => AmbientScope.SqlContext;
+        protected Sql<ISqlContext> Sql() => SqlContext.Sql();
+        protected ISqlSyntaxProvider SqlSyntax => SqlContext.SqlSyntax;
+
+        public RegisteredPredicateRepository(IScopeAccessor scopeAccessor, IProfilingLogger logger)
+        {
+            this.scopeAccessor = scopeAccessor;
+            this.logger = logger;
         }
 
         /// <summary>
@@ -23,11 +50,9 @@ namespace uCondition.Core.Data
         /// </summary>
         /// <param name="withoutData"></param>
         /// <returns></returns>
-        public IEnumerable<RegisteredPredicate> GetAll(bool withoutData = false)
+        public IEnumerable<RegisteredPredicate> GetAll()
         {
-            var sql = new Sql()
-                .Select("*")
-                .From<RegisteredPredicate>(ApplicationContext.Current.DatabaseContext.SqlSyntax);
+            var sql = Sql().Select("*").From<RegisteredPredicate>();
 
             return Database.Fetch<RegisteredPredicate>(sql);
         }
@@ -39,10 +64,7 @@ namespace uCondition.Core.Data
         /// <returns></returns>
         public RegisteredPredicate GetSingle(int id)
         {
-            var sql = new Sql()
-                .Select("*")
-                .From<RegisteredPredicate>(ApplicationContext.Current.DatabaseContext.SqlSyntax)
-                .Where<RegisteredPredicate>(c => c.Id == id);
+            var sql = Sql().Select("*").From<RegisteredPredicate>().Where<RegisteredPredicate>(c => c.Id == id);
 
             return Database.FirstOrDefault<RegisteredPredicate>(sql);
         }

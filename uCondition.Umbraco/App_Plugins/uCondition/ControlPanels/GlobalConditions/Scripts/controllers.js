@@ -17,7 +17,7 @@ var uCondition;
                 GlobalConditionsCtrl.prototype.LoadAllConditions = function () {
                     this.Conditions = new Array();
                     var that = this;
-                    this.GlobalConditionsApi.GetAllGlobalConditions().success(function (conditions) {
+                    this.GlobalConditionsApi.GetAllGlobalConditions().then(function (conditions) {
                         for (var i = 0; i < conditions.length; i++) {
                             var conditionDisplay = new uCondition.GlobalConditions.Models.ConditionDisplay();
                             conditionDisplay.Condition = conditions[i];
@@ -44,7 +44,7 @@ var uCondition;
                 GlobalConditionsCtrl.prototype.SaveCondition = function (conditionDisplay) {
                     var _this = this;
                     var createMode = conditionDisplay.Condition.Id == 0;
-                    this.GlobalConditionsApi.SaveGlobalCondition(conditionDisplay.Condition).success(function (persistedCondition) {
+                    this.GlobalConditionsApi.SaveGlobalCondition(conditionDisplay.Condition).then(function (persistedCondition) {
                         if (createMode)
                             _this.Conditions.push(conditionDisplay);
                         conditionDisplay.Condition = persistedCondition;

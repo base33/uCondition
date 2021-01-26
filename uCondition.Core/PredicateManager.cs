@@ -1,22 +1,25 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Web;
 using System.Web.Compilation;
-using uCondition.Core.Data;
 using uCondition.Core.Data.Models;
 using uCondition.Core.Interfaces;
-using uCondition.Interfaces;
-using uCondition.Licensing;
 using uCondition.Models;
+using Umbraco.Core.Scoping;
 
 namespace uCondition.Core
 {
     public class PredicateManager : IPredicateManager
     {
+        private readonly IScopeProvider _scopeProvider;
+        private readonly IGlobalConditionsRepository _globalConditionsRepository;
+
+        public PredicateManager(IScopeProvider scopeProvider, IGlobalConditionsRepository globalConditionsRepository)
+        {
+            _scopeProvider = scopeProvider;
+            _globalConditionsRepository = globalConditionsRepository;
+        }
+
         protected static List<Predicate> PredicateConfigs = new List<Predicate>();
 
         public List<Predicate> GetPredicates(bool withGlobalPredicates = true)
@@ -24,10 +27,14 @@ namespace uCondition.Core
             var predicates = new List<Predicate>();
             predicates.AddRange(PredicateConfigs);
 
-            if(withGlobalPredicates)
+            if (withGlobalPredicates)
             {
-                var repo = new GlobalConditionsRepository();
-                predicates.AddRange(repo.GetAll().Select(c => new Models.GlobalPredicate(Models.Mappers.DataToModel(c))));
+                using (var scope = _scopeProvider.CreateScope())
+                {
+                    predicates.AddRange(_globalConditionsRepository
+                        .GetAll()
+                        .Select(c => new Models.GlobalPredicate(Models.Mappers.DataToModel(c))));
+                }
             }
 
             return predicates;
@@ -37,13 +44,15 @@ namespace uCondition.Core
         {
             var predicate = PredicateConfigs.FirstOrDefault(p => p.Alias == alias);
 
-            if(predicate == null)
+            if (predicate == null)
             {
-                var repo = new GlobalConditionsRepository();
-                var globalCondition = repo.GetSingle(alias);
-                if(globalCondition != null)
+                using (var scope = _scopeProvider.CreateScope())
                 {
-                    return new Models.GlobalPredicate(Models.Mappers.DataToModel(globalCondition));
+                    var globalCondition = _globalConditionsRepository.GetSingle(alias);
+                    if (globalCondition != null)
+                    {
+                        return new Models.GlobalPredicate(Models.Mappers.DataToModel(globalCondition));
+                    }
                 }
             }
 
@@ -70,8 +79,9 @@ namespace uCondition.Core
             var dud = BuildManager.GetReferencedAssemblies();
             var assemblies = AppDomain.CurrentDomain.GetAssemblies();
             var allTypes = assemblies.SelectMany(s => s.GetTypes());
+
             var ourTypes = allTypes.Where(p => basePredicateType.IsAssignableFrom(p) && p != basePredicateType && p != globalPredicateType);
-                            //|| (baseActionType.IsAssignableFrom(p) && p != baseActionType))
+            //|| (baseActionType.IsAssignableFrom(p) && p != baseActionType))
             var typeGroups = ourTypes.GroupBy(p => basePredicateType.IsAssignableFrom(p)); //separate into actions and predicates
 
             foreach (var typeGroup in typeGroups)
@@ -81,12 +91,12 @@ namespace uCondition.Core
                 //else
                 //    PopulateActionConfigs(typeGroup);
             }
-                
+
         }
 
         protected static void PopulatePredicateConfigs(IEnumerable<Type> types)
         {
-            foreach(var type in types)
+            foreach (var type in types)
             {
                 PredicateConfigs.Add((Predicate)Activator.CreateInstance(type));
             }

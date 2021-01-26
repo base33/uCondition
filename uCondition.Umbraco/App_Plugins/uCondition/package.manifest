@@ -1,20 +1,14 @@
 ﻿{
   "$schema": "http://json.schemastore.org/package.manifest",
-  //you can define multiple editors
   "propertyEditors": [
     {
-      /*this must be a unique alias*/
       "alias": "uCondition",
-      /*the name*/
       "name": "uCondition",
-      /*the icon*/
       "icon": "icon-code",
-      /*grouping for "Select editor" dialog*/
       "group": "Logic",
-      /*the HTML file we will load for the editor*/
       "editor": {
         "view": "~/App_Plugins/uCondition/editor/uCondition.html",
-        "valueType": "json"
+        "valueType": "JSON"
       },
       "prevalues": {
         "fields": [
@@ -34,7 +28,9 @@
       }
     }
   ],
-  //array of files we want to inject into the application on app_start
+  "css": [
+    "~/App_Plugins/uCondition/editor/css/styles.css"
+  ],
   "javascript": [
     "~/App_Plugins/uCondition/editor/scripts/models.js",
     "~/App_Plugins/uCondition/editor/scripts/services.js",

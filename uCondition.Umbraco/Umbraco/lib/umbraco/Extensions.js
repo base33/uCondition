@@ -1,4 +1,4 @@
-﻿(function () {
+(function () {
 
     //JavaScript extension methods on the core JavaScript objects (like String, Date, etc...)
     if (!Date.prototype.toIsoDateTimeString) {
@@ -69,6 +69,18 @@
         };
     }
 
+    if (!String.prototype.trimStartSpecial) {
+        /** trimSpecial extension method for string */
+        // Removes all non printable chars from beginning of a string
+        String.prototype.trimStartSpecial = function () {            
+            var index = 0;
+            while (this.charCodeAt(index) <= 46) {
+                index++;
+            }            
+            return this.substr(index);
+        };
+    }
+
     if (!String.prototype.startsWith) {
         /** startsWith extension method for string */
         String.prototype.startsWith = function (str) {            
@@ -84,27 +96,21 @@
         };
     }
     
-    if (!String.prototype.trimStart) {
-        
-        /** trims the start of the string*/
-        String.prototype.trimStart = function (str) {
-            if (this.startsWith(str)) {
-                return this.substring(str.length);
-            }
-            return this;
-        };
-    }
-    
-    if (!String.prototype.trimEnd) {
+    /** trims the start of the string*/
+    String.prototype.trimStart = function (str) {
+        if (this.startsWith(str)) {
+            return this.substring(str.length);
+        }
+        return this;
+    };
 
-        /** trims the end of the string*/
-        String.prototype.trimEnd = function (str) {
-            if (this.endsWith(str)) {
-                return this.substring(0, this.length - str.length);
-            }
-            return this;
-        };
-    }
+    /** trims the end of the string*/
+    String.prototype.trimEnd = function (str) {
+        if (this.endsWith(str)) {
+            return this.substring(0, this.length - str.length);
+        }
+        return this;
+    };
 
     if (!String.prototype.utf8Encode) {
 
@@ -331,5 +337,23 @@
         };
     }
 
+    if (!Object.toBoolean) {
+
+        /** Converts a string/integer/bool to true/false */
+        Object.toBoolean = function (obj) {
+            if (obj === undefined || obj === null) {
+                return false;
+            }
+
+            if ((typeof obj) === "boolean") {
+                return obj;
+            }
+
+            if (obj === "1" || obj === 1 || obj.toString().toLowerCase() === "true") {
+                return true;
+            }
+            return false;
+        };
+    }
 
 })();

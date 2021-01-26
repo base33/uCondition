@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<configuration>
+  <system.web>
+    <httpModules>
+      <add name="uConditionAccessModule" type="uCondition.ConditionalPublicAccess.ConditionalAccessModule, uCondition.ConditionalPublicAccess" />
+    </httpModules>
+  </system.web>
+  <system.webServer>
+    <modules>
+      <remove name="uConditionAccessModule" />
+      <add name="uConditionAccessModule" type="uCondition.ConditionalPublicAccess.ConditionalAccessModule, uCondition.ConditionalPublicAccess" />
+    </modules>
+  </system.webServer>
+</configuration>

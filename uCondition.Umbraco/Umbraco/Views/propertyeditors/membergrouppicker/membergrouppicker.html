@@ -1,33 +1,21 @@
-<div ng-controller="Umbraco.PropertyEditors.MemberGroupPickerController" class="umb-editor umb-membergrouppicker">
+<div ng-controller="Umbraco.PropertyEditors.MemberGroupPickerController" class="umb-property-editor umb-membergrouppicker">
 
+	<div ng-model="renderModel">
+		<umb-node-preview
+			ng-repeat="node in renderModel | orderBy:'name'"
+			icon="node.icon"
+			name="node.name"
+			allow-remove="allowRemove"
+			on-remove="remove($index)">
+		</umb-node-preview>
+	</div>
 
-    <ul class="unstyled"
-    		ng-model="renderModel">
-    		<li ng-repeat="node in renderModel">
+	<button type="button"
+            class="umb-node-preview-add"
+            ng-click="openMemberGroupPicker()">
+		<localize key="general_add">Add</localize>
+	</button>
 
-
-
-    			<a href="#" prevent-default ng-click="remove($index)">
-    				<i class="icon icon-delete red hover-show"></i>
-    				<i class="{{node.icon}} hover-hide"></i>
-    					{{node.name}}
-    			</a>
-    		</li>
-    	</ul>
-
-	<ul class="unstyled">
-		<li>
-			<a href="#" ng-click="openMemberGroupPicker()" prevent-default>
-				<i class="icon icon-add blue"></i> <localize key="general_add">Add</localize>
-			</a>
-		</li>
-	</ul>
-
-   <umb-overlay
-      ng-if="memberGroupPicker.show"
-      model="memberGroupPicker"
-      position="right"
-      view="memberGroupPicker.view">
-   </umb-overlay>
+    <input type="hidden" name="mandatory" ng-model="model.mandatory" ng-required="model.validation.mandatory && !renderModel.length" />
 
 </div>

@@ -1,0 +1,12 @@
+﻿li.uConditionAccess .umb-tree-item__annotation::after {
+    font-family: icomoon;
+    content: "\e17b";
+    color: #d42054;
+    font-size: 10px;
+    margin-left: 5px;
+}
+
+li.uConditionAccess:not(.is-container) .umb-tree-item__annotation::after {
+    position: absolute;
+    margin-left: -20px;
+}
