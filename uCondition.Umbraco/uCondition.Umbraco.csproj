@@ -458,6 +458,10 @@
       <Project>{2114ae18-b132-4427-a94a-f3062017d41b}</Project>
       <Name>uCondition.Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\uCondition.Predicate.Members\uCondition.Predicates.Members.csproj">
+      <Project>{aed85849-7f70-48a3-bd0e-56f938bcd812}</Project>
+      <Name>uCondition.Predicates.Members</Name>
+    </ProjectReference>
     <ProjectReference Include="..\uCondition.Predicates.Demo\uCondition.Predicates.Demo.csproj">
       <Project>{7541d942-5845-45ab-8cb7-0ec599594f0a}</Project>
       <Name>uCondition.Predicates.Demo</Name>

@@ -26,10 +26,13 @@
                     {
                         foreach (var feature in Model.Features)
                         {
-                            <div class="product-advantage">
-                                <h4>@feature.GetProperty("featureName").Value()</h4>
-                                <h5>@feature.GetProperty("featureDetails").Value()</h5>
-                            </div>
+                            if (feature.IsExpressionTrue("showCondition"))
+                            {
+                                <div class="product-advantage">
+                                    <h4>@feature.GetProperty("featureName").Value()</h4>
+                                    <h5>@feature.GetProperty("featureDetails").Value()</h5>
+                                </div>
+                            }
                         }
                     }
                 </div>

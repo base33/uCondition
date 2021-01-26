@@ -222,14 +222,14 @@
         }
 
             .logicalRow .condition.add > div {
-                background: #2e8aea;
-                border-color: #6797c7;
-                padding: 5px 2px 0px;
+                background: rgb(27 38 79);;
+                border-color: #fee4e1;
+                padding: 5px 3px 0px 3px;
                 transition: ease-in-out 0.2s;
             }
 
                 .logicalRow .condition.add > div:hover {
-                    background: rgba(46, 138, 234, 0.7);
+                    background: rgb(27 38 79);
                 }
 
                 .logicalRow .condition.add > div > i {
