@@ -21,3 +21,11 @@ The credentials for Umbraco are:
 The uCondition datatype is used on the homepage in the backoffice.
 
 If you have any build issues, which may give vague build errors, it will likely be the incorrect typescript extension being used. The Typescript extension must be for Typescript 1.8.
+
+## Manual installation
+Nuget coming shortly.
+
+- Build
+- Copy uCondition.*.dll to bin
+- Copy app_plugins/uCondition folders to project
+- Apply namespace to /views/web.config (uCondition.Core.Extensions)
